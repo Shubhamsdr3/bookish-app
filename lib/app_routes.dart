@@ -1,0 +1,125 @@
+import 'package:bookish_module/commnets/comments_controller.dart';
+import 'package:bookish_module/commnets/comments_screen.dart';
+import 'package:bookish_module/data/chat_user.dart';
+import 'package:bookish_module/data/feed_data.dart';
+import 'package:bookish_module/exchange/controller/chatlist_controller.dart';
+import 'package:bookish_module/exchange/controller/chatroom_controller.dart';
+import 'package:bookish_module/exchange/ui/chat_list_screen.dart';
+import 'package:bookish_module/exchange/ui/chatroom_screen.dart';
+import 'package:bookish_module/feed/ui/home_feed_screen.dart';
+import 'package:bookish_module/feedback/controllers/feedback_controller.dart';
+import 'package:bookish_module/feedback/screens/feedback_screen.dart';
+import 'package:bookish_module/feeddetail/screens/feed_detail_screen.dart';
+import 'package:bookish_module/home/controller/home_screen_controller.dart';
+import 'package:bookish_module/home/screens/home_screen.dart';
+import 'package:bookish_module/onboarding/controller/bookish_login_controller.dart';
+import 'package:bookish_module/onboarding/screen/otp_verification_screen.dart';
+import 'package:bookish_module/preview/controller/post_preview_controller.dart';
+import 'package:bookish_module/preview/screen/post_preview_screen.dart';
+import 'package:bookish_module/search/ui/screens/search_suggestion_screen.dart';
+import 'package:bookish_module/settings/account_setting_controller.dart';
+import 'package:bookish_module/settings/account_setting_screen.dart';
+import 'package:bookish_module/topics/controller/book_topics_controller.dart';
+import 'package:bookish_module/topics/screens/select_topics_screen.dart';
+import 'package:bookish_module/webview/in_app_webview.dart';
+import 'package:get/get.dart';
+
+import 'onboarding/controller/otp_verification_controller.dart';
+import 'onboarding/data/auth_api_service.dart';
+import 'onboarding/data/onboarding_repository.dart';
+import 'onboarding/screen/bookish_login_screen.dart';
+
+final List<GetPage> appRoutes = [
+  GetPage(
+      name: HomeScreen.routeName,
+      page: () => HomeScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => HomeScreenController(), fenix: true);
+      })),
+  GetPage(
+      name: HomeFeedScreen.routeName,
+      page: () => HomeFeedScreen(),
+  ),
+  GetPage(
+      name: LoginScreen.routeName,
+      page: () => LoginScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => BookishLoginController(), fenix: true);
+      })),
+  GetPage(
+      name: OtpVerificationScreen.routeName,
+      page: () => OtpVerificationScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(
+            () => OtpVerificationController(
+                  onboardingRepository: OnboardingRepository(
+                    services: {AuthApiService()},
+                  ),
+                  phoneNumber: Get.arguments as String?,
+                ),
+            fenix: true);
+      })),
+  // GetPage(
+  //     name: EditProfileScreen.routeName,
+  //     page: () => EditProfileScreen(),
+  //     binding: BindingsBuilder(() {
+  //       Get.put(() => EditProfileController(phoneNumber: (Get.arguments as String?)));
+  //     })),
+  GetPage(
+      name: PostPreviewScreen.routeName,
+      page: () => PostPreviewScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => PostPreviewController((Get.arguments as FeedData)),
+            fenix: true);
+      })),
+  GetPage(name: InAppWebView.routeName, page: () => InAppWebView()),
+  GetPage(
+      name: FeedDetailScreen.routeName,
+      page: () => FeedDetailScreen(),
+  ),
+  GetPage(
+      name: AccountSettingScreen.routeName,
+      page: () => AccountSettingScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => AccountSettingController());
+      })),
+  GetPage(
+      name: CommentsScreen.routeName,
+      page: () => CommentsScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => CommentsController(
+            feedData: (Get.arguments as FeedDetailArgs).feedData));
+      })),
+  GetPage(
+      name: FeedbackScreen.routeName,
+      page: () => FeedbackScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => FeedbackController());
+      })),
+  GetPage(
+      name: SearchSuggestionScreen.routeName,
+      page: () => const SearchSuggestionScreen(),
+  ),
+  GetPage(
+      name: UserChatListScreen.routeName,
+      page: () => UserChatListScreen(),
+      binding: BindingsBuilder(() {
+        FeedData? feedData = (Get.arguments as ChatListScreenArgs).feedPost;
+        Get.lazyPut(() => ChatListController(feedPost: feedData));
+      })),
+  GetPage(
+      name: SelectTopicsScreen.routeName,
+      page: () => SelectTopicsScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => SelectTopicController());
+      })),
+  GetPage(
+      name: ChatRoomScreen.routeName,
+      page: () => ChatRoomScreen(),
+      binding: BindingsBuilder(() {
+        FeedData? feedData = (Get.arguments as ChatRoomScreenArgs).feedPost;
+        ChatUser? chatUser = (Get.arguments as ChatRoomScreenArgs).chatUser;
+        Get.lazyPut(
+            () => ChatRoomController(feedPost: feedData, chatUser: chatUser));
+      })),
+];
