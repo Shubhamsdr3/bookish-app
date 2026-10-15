@@ -1,4 +1,4 @@
-import 'package:bookish_module/exchange/controller/exchange_controller.dart';
+import 'package:bookish/exchange/controller/exchange_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';

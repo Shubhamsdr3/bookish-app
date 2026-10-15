@@ -1,6 +1,6 @@
-import 'package:bookish_module/core/error/exceptions.dart';
-import 'package:bookish_module/search/data/datasources/search_remote_data_source.dart';
-import 'package:bookish_module/search/data/models/search_result_model.dart';
+import 'package:bookish/core/error/exceptions.dart';
+import 'package:bookish/search/data/datasources/search_remote_data_source.dart';
+import 'package:bookish/search/data/models/search_result_model.dart';
 import 'package:network_service/network_manager.dart';
 import 'package:network_service/api.dart';
 import 'package:network_service/api_endpoints.dart';

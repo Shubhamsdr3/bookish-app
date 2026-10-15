@@ -1,5 +1,5 @@
-import 'package:bookish_module/data/book_detail.dart';
-import 'package:bookish_module/search/domain/entities/search_result_entity.dart';
+import 'package:bookish/data/book_detail.dart';
+import 'package:bookish/search/domain/entities/search_result_entity.dart';
 
 class SearchResultModel extends SearchResultEntity {
   const SearchResultModel({required super.items});

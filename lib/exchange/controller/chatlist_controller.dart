@@ -1,4 +1,4 @@
-import 'package:bookish_module/exchange/data/chat_api_service.dart';
+import 'package:bookish/exchange/data/chat_api_service.dart';
 import 'package:get/get.dart';
 import 'package:network_service/bookish_result.dart';
 import 'package:network_service/util/user_store.dart';

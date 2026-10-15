@@ -1,4 +1,4 @@
-import 'package:bookish_module/socket/socket_service.dart';
+import 'package:bookish/socket/socket_service.dart';
 import 'package:flutter/material.dart';
 
 class WebsocketScreen extends StatefulWidget {

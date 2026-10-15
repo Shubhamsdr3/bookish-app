@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:bookish_module/createpost/domain/usecases/create_post_usecase.dart';
-import 'package:bookish_module/createpost/ui/notifiers/create_post_state.dart';
-import 'package:bookish_module/createpost/ui/providers/create_post_providers.dart';
-import 'package:bookish_module/data/book_detail.dart';
+import 'package:bookish/createpost/domain/usecases/create_post_usecase.dart';
+import 'package:bookish/createpost/ui/notifiers/create_post_state.dart';
+import 'package:bookish/createpost/ui/providers/create_post_providers.dart';
+import 'package:bookish/data/book_detail.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

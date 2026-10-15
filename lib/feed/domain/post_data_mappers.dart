@@ -1,6 +1,6 @@
-import 'package:bookish_module/core/data_mapper.dart';
-import 'package:bookish_module/data/feed_data.dart';
-import 'package:bookish_module/feed/domain/model/post_item.dart';
+import 'package:bookish/core/data_mapper.dart';
+import 'package:bookish/data/feed_data.dart';
+import 'package:bookish/feed/domain/model/post_item.dart';
 import 'package:network_service/data/reader.dart';
 
 import '../../data/feed_post.dart';

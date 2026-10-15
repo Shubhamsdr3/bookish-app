@@ -1,5 +1,5 @@
-import 'package:bookish_module/database/app_database.dart';
-import 'package:bookish_module/feed/domain/model/post_item.dart';
+import 'package:bookish/database/app_database.dart';
+import 'package:bookish/feed/domain/model/post_item.dart';
 
 abstract class LocalDataSource {
   Future<List<PostItem>> getFeedItems();

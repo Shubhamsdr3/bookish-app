@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bookish_module/createpost/ui/notifiers/create_post_notifier.dart';
-import 'package:bookish_module/createpost/ui/notifiers/create_post_state.dart';
+import 'package:bookish/createpost/ui/notifiers/create_post_notifier.dart';
+import 'package:bookish/createpost/ui/notifiers/create_post_state.dart';
 
 /// Single provider for the entire create-post screen state.
 ///

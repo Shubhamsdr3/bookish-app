@@ -1,4 +1,4 @@
-import 'package:bookish_module/widgets/timer/time_widget_provider.dart';
+import 'package:bookish/widgets/timer/time_widget_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

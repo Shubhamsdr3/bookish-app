@@ -1,4 +1,4 @@
-import 'package:bookish_module/uikit/bookish_size.dart';
+import 'package:bookish/uikit/bookish_size.dart';
 import 'package:flutter/src/material/theme_data.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

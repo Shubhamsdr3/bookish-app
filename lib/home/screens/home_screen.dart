@@ -1,7 +1,7 @@
-import 'package:bookish_module/createpost/ui/create_post_screen_v2.dart';
-import 'package:bookish_module/home/controller/home_screen_controller.dart';
-import 'package:bookish_module/profile/ui/screens/user_profile_screen.dart';
-import 'package:bookish_module/util/app_state.dart';
+import 'package:bookish/createpost/ui/create_post_screen_v2.dart';
+import 'package:bookish/home/controller/home_screen_controller.dart';
+import 'package:bookish/profile/ui/screens/user_profile_screen.dart';
+import 'package:bookish/util/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -12,6 +12,8 @@ class HomeScreen extends GetView<HomeScreenController> {
   static String routeName = "/home";
 
   final List<Widget> _pages = [HomeFeedScreen(), CreatePostScreen(), UserProfileScreen()];
+
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

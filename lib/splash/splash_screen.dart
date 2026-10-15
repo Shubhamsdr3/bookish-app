@@ -1,14 +1,11 @@
 import 'dart:async';
 
-import 'package:bookish_module/util/utility.dart';
+import 'package:bookish/util/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:network_service/util/user_store.dart';
 
-import '../home/screens/home_screen.dart';
-import '../onboarding/screen/bookish_login_screen.dart';
+import '../native/native_android_plugin.dart';
 import '../util/dimensions.dart';
-
 
 class SplashScreen extends StatefulWidget {
   static String routeName = "/splash-screen";
@@ -68,11 +65,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _navigateToHome() async {
-    final userLogged = await UserStore.isUserLoggedIn();
-    if (userLogged) {
-      Get.offNamed(HomeScreen.routeName);
-    } else {
-      Get.offNamed(LoginScreen.routeName);
-    }
+    Get.offNamed(NativeAndroidPlugin.routeName);
+    // final userLogged = await UserStore.isUserLoggedIn();
+    // if (userLogged) {
+    //   Get.offNamed(HomeScreen.routeName);
+    // } else {
+    //   Get.offNamed(LoginScreen.routeName);
+    // }
   }
 }

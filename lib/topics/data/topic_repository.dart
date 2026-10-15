@@ -1,6 +1,6 @@
-import 'package:bookish_module/core/base_repository.dart';
-import 'package:bookish_module/topics/data/topic_api_service.dart';
-import 'package:bookish_module/topics/domain/model/book_topic_response.dart';
+import 'package:bookish/core/base_repository.dart';
+import 'package:bookish/topics/data/topic_api_service.dart';
+import 'package:bookish/topics/domain/model/book_topic_response.dart';
 import 'package:network_service/api.dart';
 import 'package:network_service/network_manager.dart';
 import 'package:network_service/util/user_store.dart';

@@ -1,9 +1,9 @@
-import 'package:bookish_module/core/base_repository.dart';
-import 'package:bookish_module/core/error/failures.dart';
-import 'package:bookish_module/data/book_detail.dart';
-import 'package:bookish_module/feed/data/local_data_source.dart';
-import 'package:bookish_module/feed/domain/model/post_item.dart';
-import 'package:bookish_module/feed/domain/post_data_mappers.dart';
+import 'package:bookish/core/base_repository.dart';
+import 'package:bookish/core/error/failures.dart';
+import 'package:bookish/data/book_detail.dart';
+import 'package:bookish/feed/data/local_data_source.dart';
+import 'package:bookish/feed/domain/model/post_item.dart';
+import 'package:bookish/feed/domain/post_data_mappers.dart';
 import 'package:dartz/dartz.dart';
 import 'package:network_service/api.dart';
 import 'package:network_service/exceptions/http_api_exception.dart';

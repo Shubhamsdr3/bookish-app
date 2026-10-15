@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bookish_module/data/chat_user.dart';
+import 'package:bookish/data/chat_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:network_service/util/user_store.dart';

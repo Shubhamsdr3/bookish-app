@@ -1,5 +1,5 @@
-import 'package:bookish_module/preview/controller/post_preview_controller.dart';
-import 'package:bookish_module/widgets/bookish_network_image.dart';
+import 'package:bookish/preview/controller/post_preview_controller.dart';
+import 'package:bookish/widgets/bookish_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';

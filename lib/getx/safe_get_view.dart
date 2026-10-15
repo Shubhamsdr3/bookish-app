@@ -1,4 +1,4 @@
-import 'package:bookish_module/getx/safe_get.dart';
+import 'package:bookish/getx/safe_get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 

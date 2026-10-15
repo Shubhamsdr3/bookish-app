@@ -1,5 +1,5 @@
-import 'package:bookish_module/data/book_detail.dart';
-import 'package:bookish_module/widgets/book_detail_card.dart';
+import 'package:bookish/data/book_detail.dart';
+import 'package:bookish/widgets/book_detail_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

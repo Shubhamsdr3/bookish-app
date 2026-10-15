@@ -1,5 +1,5 @@
-import 'package:bookish_module/data/book_detail.dart';
-import 'package:bookish_module/data/feed_data.dart';
+import 'package:bookish/data/book_detail.dart';
+import 'package:bookish/data/feed_data.dart';
 
 enum FeedDetailStatus { initial, loading, loaded, error }
 

@@ -1,4 +1,4 @@
-import 'package:bookish_module/feedback/data/feedback_repository.dart';
+import 'package:bookish/feedback/data/feedback_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:network_service/util/user_store.dart';

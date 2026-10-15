@@ -1,4 +1,4 @@
-import 'package:bookish_module/home/controller/camera_screen_controller.dart';
+import 'package:bookish/home/controller/camera_screen_controller.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

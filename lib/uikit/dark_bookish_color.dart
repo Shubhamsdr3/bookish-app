@@ -1,4 +1,4 @@
-import 'package:bookish_module/uikit/bookish_color.dart';
+import 'package:bookish/uikit/bookish_color.dart';
 import 'package:flutter/material.dart';
 
 class DarkBookishColor implements BookishColor {

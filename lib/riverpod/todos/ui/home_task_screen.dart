@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bookish_module/riverpod/todos/data/Task.dart';
+import 'package:bookish/riverpod/todos/data/Task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../task_list_provider.dart';

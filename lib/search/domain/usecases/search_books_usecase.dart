@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:bookish_module/core/error/failures.dart';
-import 'package:bookish_module/search/domain/entities/search_result_entity.dart';
-import 'package:bookish_module/search/domain/repositories/search_repository.dart';
+import 'package:bookish/core/error/failures.dart';
+import 'package:bookish/search/domain/entities/search_result_entity.dart';
+import 'package:bookish/search/domain/repositories/search_repository.dart';
 
 abstract class SearchBooksUseCase {
   Future<Either<Failure, SearchResultEntity>> call(String query);

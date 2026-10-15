@@ -1,4 +1,4 @@
-import 'package:bookish_module/feedback/controllers/feedback_controller.dart';
+import 'package:bookish/feedback/controllers/feedback_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_emoji_feedback/flutter_emoji_feedback.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

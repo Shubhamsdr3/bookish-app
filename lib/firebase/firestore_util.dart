@@ -1,7 +1,7 @@
-import 'package:bookish_module/data/chat_message.dart';
-import 'package:bookish_module/data/notification_info.dart';
+import 'package:bookish/data/chat_message.dart';
+import 'package:bookish/data/notification_info.dart';
 import 'package:network_service/data/reader.dart';
-import 'package:bookish_module/data/user_comment.dart';
+import 'package:bookish/data/user_comment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 

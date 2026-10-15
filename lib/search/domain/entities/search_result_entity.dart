@@ -1,4 +1,4 @@
-import 'package:bookish_module/data/book_detail.dart';
+import 'package:bookish/data/book_detail.dart';
 import 'package:equatable/equatable.dart';
 
 class SearchResultEntity extends Equatable {

@@ -1,5 +1,5 @@
-import 'package:bookish_module/onboarding/controller/bookish_login_controller.dart';
-import 'package:bookish_module/uikit/bookish_color.dart';
+import 'package:bookish/onboarding/controller/bookish_login_controller.dart';
+import 'package:bookish/uikit/bookish_color.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

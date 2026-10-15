@@ -1,7 +1,7 @@
-import 'package:bookish_module/createpost/ui/notifiers/create_post_state.dart';
-import 'package:bookish_module/createpost/ui/providers/create_post_state_providers.dart';
-import 'package:bookish_module/widgets/image_grid_widget.dart';
-import 'package:bookish_module/widgets/search_widget.dart';
+import 'package:bookish/createpost/ui/notifiers/create_post_state.dart';
+import 'package:bookish/createpost/ui/providers/create_post_state_providers.dart';
+import 'package:bookish/widgets/image_grid_widget.dart';
+import 'package:bookish/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

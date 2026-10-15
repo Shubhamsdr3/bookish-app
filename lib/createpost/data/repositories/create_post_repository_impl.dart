@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:bookish_module/core/error/exceptions.dart';
-import 'package:bookish_module/core/error/failures.dart';
-import 'package:bookish_module/createpost/data/datasources/create_post_remote_data_source.dart';
-import 'package:bookish_module/createpost/domain/repositories/create_post_repository.dart';
-import 'package:bookish_module/data/feed_data.dart';
+import 'package:bookish/core/error/exceptions.dart';
+import 'package:bookish/core/error/failures.dart';
+import 'package:bookish/createpost/data/datasources/create_post_remote_data_source.dart';
+import 'package:bookish/createpost/domain/repositories/create_post_repository.dart';
+import 'package:bookish/data/feed_data.dart';
 
 class CreatePostRepositoryImpl implements ICreatePostRepository {
   final ICreatePostRemoteDataSource remoteDataSource;
