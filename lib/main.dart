@@ -90,7 +90,8 @@ class _MyAppState extends State<MyApp> {
         child: GetMaterialApp(
           getPages: appRoutes,
           title: 'Bookish',
-          navigatorKey: ApiService().alice.getNavigatorKey(),
+          navigatorKey:
+              ApiService().isInitialized ? ApiService().alice.getNavigatorKey() : null,
           home: SplashScreen(),
           theme: ThemeData(
               useMaterial3: true,

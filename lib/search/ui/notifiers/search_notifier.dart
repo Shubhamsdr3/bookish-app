@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:bookish_module/search/domain/usecases/search_books_usecase.dart';
-import 'package:bookish_module/search/ui/notifiers/search_state.dart';
+import 'package:bookish/search/domain/usecases/search_books_usecase.dart';
+import 'package:bookish/search/ui/notifiers/search_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

@@ -1,5 +1,5 @@
-import 'package:bookish_module/data/feed_post.dart';
-import 'package:bookish_module/data/post_action.dart';
+import 'package:bookish/data/feed_post.dart';
+import 'package:bookish/data/post_action.dart';
 import 'package:network_service/data/reader.dart';
 class FeedResponse {
   bool? isSuccess;

@@ -1,5 +1,5 @@
-import 'package:bookish_module/widgets/animator_dot_indicator.dart';
-import 'package:bookish_module/widgets/bookish_network_image.dart';
+import 'package:bookish/widgets/animator_dot_indicator.dart';
+import 'package:bookish/widgets/bookish_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -4,6 +4,8 @@ class DashedBorder extends StatelessWidget {
   static const double _height = 500;
   static const double _width = 500;
 
+  const DashedBorder({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -14,11 +16,11 @@ class DashedBorder extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _container(),
                 _container(),
               ],
-              mainAxisAlignment: MainAxisAlignment.center,
             ),
             CustomPaint(
                 foregroundPainter: DashedLinePainter(),

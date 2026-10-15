@@ -1,7 +1,7 @@
-import 'package:bookish_module/data/feed_data.dart';
-import 'package:bookish_module/feeddetail/provider/book_detail_provider.dart';
-import 'package:bookish_module/feeddetail/provider/feed_detail_state.dart';
-import 'package:bookish_module/widgets/book_detail_card.dart';
+import 'package:bookish/data/feed_data.dart';
+import 'package:bookish/feeddetail/provider/book_detail_provider.dart';
+import 'package:bookish/feeddetail/provider/feed_detail_state.dart';
+import 'package:bookish/widgets/book_detail_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

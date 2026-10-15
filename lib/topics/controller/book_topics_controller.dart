@@ -1,7 +1,7 @@
-import 'package:bookish_module/home/screens/home_screen.dart';
-import 'package:bookish_module/topics/data/topic_api_service.dart';
-import 'package:bookish_module/topics/data/topic_repository.dart';
-import 'package:bookish_module/util/enums.dart';
+import 'package:bookish/home/screens/home_screen.dart';
+import 'package:bookish/topics/data/topic_api_service.dart';
+import 'package:bookish/topics/data/topic_repository.dart';
+import 'package:bookish/util/enums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 

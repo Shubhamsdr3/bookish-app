@@ -1,5 +1,5 @@
-import 'package:bookish_module/data/notification_info.dart';
-import 'package:bookish_module/notification/controller/notification_controller.dart';
+import 'package:bookish/data/notification_info.dart';
+import 'package:bookish/notification/controller/notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';

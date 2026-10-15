@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:network_service/network_info.dart';
 
-import 'package:bookish_module/database/app_database.dart';
-import 'package:bookish_module/feed/data/feed_api_service.dart';
-import 'package:bookish_module/feed/data/local_data_source.dart';
-import 'package:bookish_module/feed/domain/delete_post_use_case.dart';
-import 'package:bookish_module/feed/domain/get_feed_user_case.dart';
-import 'package:bookish_module/feed/domain/post_data_mappers.dart';
-import 'package:bookish_module/feed/feed_repository.dart';
+import 'package:bookish/database/app_database.dart';
+import 'package:bookish/feed/data/feed_api_service.dart';
+import 'package:bookish/feed/data/local_data_source.dart';
+import 'package:bookish/feed/domain/delete_post_use_case.dart';
+import 'package:bookish/feed/domain/get_feed_user_case.dart';
+import 'package:bookish/feed/domain/post_data_mappers.dart';
+import 'package:bookish/feed/feed_repository.dart';
 
 // --- Dependency Providers ---
 

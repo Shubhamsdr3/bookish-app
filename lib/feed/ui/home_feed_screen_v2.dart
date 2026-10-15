@@ -1,8 +1,8 @@
-import 'package:bookish_module/feed/ui/feed_card_widget.dart';
-import 'package:bookish_module/feed/ui/provider/home_feed_notifier.dart';
-import 'package:bookish_module/feed/ui/provider/home_feed_state.dart';
-import 'package:bookish_module/profile/ui/screens/user_profile_screen.dart';
-import 'package:bookish_module/uikit/bookish_size.dart';
+import 'package:bookish/feed/ui/feed_card_widget.dart';
+import 'package:bookish/feed/ui/provider/home_feed_notifier.dart';
+import 'package:bookish/feed/ui/provider/home_feed_state.dart';
+import 'package:bookish/profile/ui/screens/user_profile_screen.dart';
+import 'package:bookish/uikit/bookish_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

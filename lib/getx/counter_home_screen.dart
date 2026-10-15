@@ -1,5 +1,5 @@
-import 'package:bookish_module/getx/safe_get.dart';
-import 'package:bookish_module/getx/safe_get_view.dart';
+import 'package:bookish/getx/safe_get.dart';
+import 'package:bookish/getx/safe_get_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

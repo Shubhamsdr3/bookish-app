@@ -1,4 +1,4 @@
-import 'package:bookish_module/getx/safe_get.dart';
+import 'package:bookish/getx/safe_get.dart';
 import 'package:get/get.dart';
 
 import '../getX/counter_controller.dart';

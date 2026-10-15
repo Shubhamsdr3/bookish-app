@@ -1,4 +1,4 @@
-import 'package:bookish_module/data/notification_info.dart';
+import 'package:bookish/data/notification_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:network_service/util/user_store.dart';

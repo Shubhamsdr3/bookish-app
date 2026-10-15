@@ -1,4 +1,4 @@
-import 'package:bookish_module/getx/safe_controller.dart';
+import 'package:bookish/getx/safe_controller.dart';
 
 import 'live_rx.dart';
 

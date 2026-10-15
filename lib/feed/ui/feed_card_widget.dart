@@ -1,9 +1,9 @@
-import 'package:bookish_module/commnets/comments_screen.dart';
-import 'package:bookish_module/feed/controller/feed_widget_controller.dart';
-import 'package:bookish_module/feeddetail/screens/feed_detail_screen.dart';
-import 'package:bookish_module/util/utility.dart';
-import 'package:bookish_module/widgets/image_carousel_widget.dart';
-import 'package:bookish_module/widgets/menu_option_widget.dart';
+import 'package:bookish/commnets/comments_screen.dart';
+import 'package:bookish/feed/controller/feed_widget_controller.dart';
+import 'package:bookish/feeddetail/screens/feed_detail_screen.dart';
+import 'package:bookish/util/utility.dart';
+import 'package:bookish/widgets/image_carousel_widget.dart';
+import 'package:bookish/widgets/menu_option_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

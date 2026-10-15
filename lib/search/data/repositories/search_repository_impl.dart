@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:bookish_module/core/error/exceptions.dart';
-import 'package:bookish_module/core/error/failures.dart';
-import 'package:bookish_module/search/data/datasources/search_remote_data_source.dart';
-import 'package:bookish_module/search/domain/entities/search_result_entity.dart';
-import 'package:bookish_module/search/domain/repositories/search_repository.dart';
+import 'package:bookish/core/error/exceptions.dart';
+import 'package:bookish/core/error/failures.dart';
+import 'package:bookish/search/data/datasources/search_remote_data_source.dart';
+import 'package:bookish/search/domain/entities/search_result_entity.dart';
+import 'package:bookish/search/domain/repositories/search_repository.dart';
 
 class SearchRepositoryImpl implements ISearchRepository {
   final ISearchRemoteDataSource remoteDataSource;

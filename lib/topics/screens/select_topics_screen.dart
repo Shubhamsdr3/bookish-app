@@ -1,6 +1,6 @@
-import 'package:bookish_module/util/enums.dart';
-import 'package:bookish_module/util/utility.dart';
-import 'package:bookish_module/widgets/bookish_error_widget.dart';
+import 'package:bookish/util/enums.dart';
+import 'package:bookish/util/utility.dart';
+import 'package:bookish/widgets/bookish_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

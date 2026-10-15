@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:bookish_module/onboarding/data/auth_api_service.dart';
-import 'package:bookish_module/onboarding/data/onboarding_repository.dart';
-import 'package:bookish_module/topics/screens/select_topics_screen.dart';
+import 'package:bookish/onboarding/data/auth_api_service.dart';
+import 'package:bookish/onboarding/data/onboarding_repository.dart';
+import 'package:bookish/topics/screens/select_topics_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';

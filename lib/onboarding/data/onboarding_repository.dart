@@ -1,8 +1,8 @@
-import 'package:bookish_module/core/base_repository.dart';
+import 'package:bookish/core/base_repository.dart';
 import 'package:network_service/data/reader.dart';
 import 'package:network_service/api.dart';
 import 'package:network_service/network_manager.dart';
-import 'package:bookish_module/onboarding/data/auth_api_service.dart';
+import 'package:bookish/onboarding/data/auth_api_service.dart';
 
 abstract class IOnboardingRepository extends IRepository {
   IOnboardingRepository({required super.services});

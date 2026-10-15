@@ -1,4 +1,4 @@
-import 'package:bookish_module/data/feed_data.dart';
+import 'package:bookish/data/feed_data.dart';
 import 'package:network_service/api.dart';
 import 'package:network_service/network_manager.dart';
 
