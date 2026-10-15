@@ -54,3 +54,11 @@ app.*.map.json
 # Keep a non-secret placeholder so Flutter asset bundling works
 !assets/env/
 !assets/env/.env_prod
+
+# FVM Version Cache
+.fvm/
+# Widget Preview related
+.widget_preview/
+/pubspec.lock
+/android/app/src/dev/google-services.json
+/android/app/src/prod/google-services.json

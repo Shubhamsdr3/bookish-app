@@ -1,7 +1,7 @@
-import 'package:bookish_module/commnets/comments_screen.dart';
-import 'package:bookish_module/data/chat_message.dart';
-import 'package:bookish_module/exchange/controller/chatroom_controller.dart';
-import 'package:bookish_module/widgets/bookish_network_image.dart';
+import 'package:bookish/commnets/comments_screen.dart';
+import 'package:bookish/data/chat_message.dart';
+import 'package:bookish/exchange/controller/chatroom_controller.dart';
+import 'package:bookish/widgets/bookish_network_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';

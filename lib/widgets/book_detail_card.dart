@@ -1,6 +1,6 @@
-import 'package:bookish_module/data/book_detail.dart';
-import 'package:bookish_module/util/utility.dart';
-import 'package:bookish_module/widgets/bookish_network_image.dart';
+import 'package:bookish/data/book_detail.dart';
+import 'package:bookish/util/utility.dart';
+import 'package:bookish/widgets/bookish_network_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';

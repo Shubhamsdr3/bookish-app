@@ -1,5 +1,5 @@
-import 'package:bookish_module/data/chat_user.dart';
-import 'package:bookish_module/exchange/controller/chatlist_controller.dart';
+import 'package:bookish/data/chat_user.dart';
+import 'package:bookish/exchange/controller/chatlist_controller.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

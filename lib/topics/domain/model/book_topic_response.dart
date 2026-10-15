@@ -1,4 +1,4 @@
-import 'package:bookish_module/data/chip_data.dart';
+import 'package:bookish/data/chip_data.dart';
 
 class BookTopicResponse {
   final List<ChipData> fictionList;

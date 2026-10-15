@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:bookish_module/data/chat_user.dart';
-import 'package:bookish_module/exchange/data/chat_api_service.dart';
+import 'package:bookish/data/chat_user.dart';
+import 'package:bookish/exchange/data/chat_api_service.dart';
 import 'package:network_service/api.dart';
 import 'package:network_service/old_api_service.dart';
 import 'package:network_service/network_manager.dart';
