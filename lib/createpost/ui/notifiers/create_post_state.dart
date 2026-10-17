@@ -1,6 +1,5 @@
 import 'package:bookish/data/book_detail.dart';
 import 'package:bookish/data/feed_data.dart';
-import 'package:image_picker/image_picker.dart';
 
 enum CreatePostStatus { initial, loading, success, error }
 
@@ -9,7 +8,7 @@ class CreatePostState {
   final String? errorMessage;
   final FeedData? createdPost;
   final BookDetail? selectedBook;
-  final List<XFile> imageFiles;
+  final List<String> imagePaths;
   final bool isBookSelected;
   final String caption;
   final String bookTitle;
@@ -20,7 +19,7 @@ class CreatePostState {
     this.errorMessage,
     this.createdPost,
     this.selectedBook,
-    this.imageFiles = const [],
+    this.imagePaths = const [],
     this.isBookSelected = false,
     this.caption = '',
     this.bookTitle = '',
@@ -37,7 +36,7 @@ class CreatePostState {
     String? errorMessage,
     FeedData? createdPost,
     BookDetail? selectedBook,
-    List<XFile>? imageFiles,
+    List<String>? imagePaths,
     bool? isBookSelected,
     String? caption,
     String? bookTitle,
@@ -50,7 +49,7 @@ class CreatePostState {
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       createdPost: createdPost ?? this.createdPost,
       selectedBook: clearBook ? null : (selectedBook ?? this.selectedBook),
-      imageFiles: imageFiles ?? this.imageFiles,
+      imagePaths: imagePaths ?? this.imagePaths,
       isBookSelected: isBookSelected ?? this.isBookSelected,
       caption: caption ?? this.caption,
       bookTitle: bookTitle ?? this.bookTitle,
@@ -58,4 +57,3 @@ class CreatePostState {
     );
   }
 }
-

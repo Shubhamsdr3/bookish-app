@@ -20,22 +20,37 @@ class MainActivity : FlutterFragmentActivity() {
         ActivityResultContracts.StartActivityForResult(),
     ) { result ->
         if (result.resultCode != RESULT_OK) {
+            NativeImageBridge.emitImagePaths(emptyList())
             return@registerForActivityResult
         }
-        val path: String = result.data
-            ?.getStringExtra(NativeImagePickerActivity.EXTRA_PATH)
-            ?: return@registerForActivityResult
-        NativeImageBridge.emitImagePath(path)
+        val data = result.data
+        if (data == null) {
+            NativeImageBridge.emitImagePaths(emptyList())
+            return@registerForActivityResult
+        }
+        val paths: ArrayList<String>? =
+            data.getStringArrayListExtra(NativeImagePickerActivity.EXTRA_PATHS)
+        if (paths != null && paths.isNotEmpty()) {
+            NativeImageBridge.emitImagePaths(paths)
+            return@registerForActivityResult
+        }
+        val path: String? = data.getStringExtra(NativeImagePickerActivity.EXTRA_PATH)
+        if (path.isNullOrEmpty()) {
+            NativeImageBridge.emitImagePaths(emptyList())
+            return@registerForActivityResult
+        }
+        NativeImageBridge.emitImagePaths(listOf(path))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NativeImageBridge.attachLaunchers(
-            openGallery = {
+            openGallery = { allowMultiple ->
                 imagePickerLauncher.launch(
                     NativeImagePickerActivity.createIntent(
                         this,
                         NativeImagePickerActivity.MODE_GALLERY,
+                        allowMultiple = allowMultiple,
                     ),
                 )
             },

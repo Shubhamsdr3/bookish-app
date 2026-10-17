@@ -3,9 +3,19 @@ import 'package:bookish/data/notification_info.dart';
 import 'package:network_service/data/reader.dart';
 import 'package:bookish/data/user_comment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 class FireStoreUtil {
+  /// Returns the current Firebase Auth user's ID token, or null if signed out.
+  static Future<String?> getFirebaseIdToken({bool forceRefresh = true}) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return null;
+    }
+    return user.getIdToken(forceRefresh);
+  }
+
 
   final String _POST_COLLECTION = "posts";
   final String _NOTIFICATION_COLLECTION = "notifications";

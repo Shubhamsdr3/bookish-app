@@ -69,7 +69,11 @@ class ComposePlatformView(
                     ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Button(onClick = { NativeImageBridge.openGallery() }) {
+                    Button(
+                        onClick = {
+                            NativeImageBridge.openGallery(allowMultiple = false)
+                        },
+                    ) {
                         Text(text = "Open gallery")
                     }
                     Button(onClick = { NativeImageBridge.openCamera() }) {

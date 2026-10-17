@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:bookish/native/native_image_picker.dart';
@@ -18,7 +17,6 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   final GetUserProfileUseCase _getUserProfileUseCase;
   final UpdateProfileImageUseCase _updateProfileImageUseCase;
   final NativeImagePicker _nativeImagePicker;
-  StreamSubscription<String>? _nativeImageSubscription;
 
   ProfileNotifier({
     required GetUserProfileUseCase getUserProfileUseCase,
@@ -28,8 +26,6 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         _updateProfileImageUseCase = updateProfileImageUseCase,
         _nativeImagePicker = nativeImagePicker ?? NativeImagePicker.instance,
         super(const ProfileState()) {
-    _nativeImageSubscription =
-        _nativeImagePicker.images.listen(onNativeImagePicked);
     _init();
   }
 
@@ -51,7 +47,12 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     state = state.copyWith(appVersion: packageInfo.version);
   }
 
-  Future<void> fetchUserProfile() async {
+  Future<void> fetchUserProfile({bool force = false}) async {
+    if (!force &&
+        state.status == ProfileStatus.loaded &&
+        state.profile != null) {
+      return;
+    }
     state = state.copyWith(status: ProfileStatus.loading);
 
     final userId = state.currentUserId.isNotEmpty
@@ -76,12 +77,20 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     );
   }
 
-  Future<void> openGallery() {
-    return _nativeImagePicker.openGallery();
+  Future<void> openGallery() async {
+    final List<String> paths = await _nativeImagePicker.pickFromGallery();
+    if (paths.isEmpty) {
+      return;
+    }
+    await onNativeImagePicked(paths.first);
   }
 
-  Future<void> openCamera() {
-    return _nativeImagePicker.openCamera();
+  Future<void> openCamera() async {
+    final List<String> paths = await _nativeImagePicker.pickFromCamera();
+    if (paths.isEmpty) {
+      return;
+    }
+    await onNativeImagePicked(paths.first);
   }
 
   Future<void> onNativeImagePicked(String path) async {
@@ -157,15 +166,10 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     );
   }
 
-  @override
-  void dispose() {
-    _nativeImageSubscription?.cancel();
-    super.dispose();
-  }
 }
 
 final profileNotifierProvider =
-    StateNotifierProvider.autoDispose<ProfileNotifier, ProfileState>((ref) {
+    StateNotifierProvider<ProfileNotifier, ProfileState>((ref) {
   final getUserProfileUseCase = ref.watch(getUserProfileUseCaseProvider);
   final updateProfileImageUseCase =
       ref.watch(updateProfileImageUseCaseProvider);

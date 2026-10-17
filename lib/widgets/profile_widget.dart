@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
+
+enum NativePickSource { gallery, camera }
 
 class ProfileWidget extends StatelessWidget {
-
-  final Function(ImageSource source) onChosePictureClicked;
+  final void Function(NativePickSource source) onChosePictureClicked;
 
   const ProfileWidget({super.key, required this.onChosePictureClicked});
 
@@ -18,45 +18,38 @@ class ProfileWidget extends StatelessWidget {
         child: Column(
           children: [
             const Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Chose profile picture",
-                  style: TextStyle(fontSize: 18),
-                )),
-            SizedBox(
-              height: 12.r,
+              alignment: Alignment.topLeft,
+              child: Text(
+                'Chose profile picture',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
+            SizedBox(height: 12.r),
             Row(
               children: [
                 Column(
                   children: [
                     IconButton(
-                        onPressed: () =>
-                            onChosePictureClicked(ImageSource.gallery),
-                        icon: Icon(
-                          Icons.photo,
-                          size: 32.r,
-                        )),
-                    const Text("Gallery")
+                      onPressed: () =>
+                          onChosePictureClicked(NativePickSource.gallery),
+                      icon: Icon(Icons.photo, size: 32.r),
+                    ),
+                    const Text('Gallery'),
                   ],
                 ),
-                SizedBox(
-                  width: 46.r,
-                ),
+                SizedBox(width: 46.r),
                 Column(
                   children: [
                     IconButton(
-                        onPressed: () =>
-                            onChosePictureClicked(ImageSource.camera),
-                        icon: Icon(
-                          Icons.camera_alt,
-                          size: 32.r,
-                        )),
-                    const Text("Camera")
+                      onPressed: () =>
+                          onChosePictureClicked(NativePickSource.camera),
+                      icon: Icon(Icons.camera_alt, size: 32.r),
+                    ),
+                    const Text('Camera'),
                   ],
-                )
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),

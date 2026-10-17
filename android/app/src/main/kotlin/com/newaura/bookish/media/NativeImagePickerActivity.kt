@@ -15,15 +15,16 @@ import java.io.File
 import java.io.IOException
 
 /**
- * Owns gallery/camera Activity Result contracts and returns a local file path.
- * [com.newaura.bookish.MainActivity] only starts this activity and forwards the path to Flutter.
+ * Owns gallery/camera Activity Result contracts and returns local file path(s).
+ * [com.newaura.bookish.MainActivity] starts this activity and forwards paths to Flutter via Pigeon.
  */
 class NativeImagePickerActivity : ComponentActivity() {
 
     private var cameraPhotoFile: File? = null
     private var hasLaunchedPicker: Boolean = false
+    private var allowMultiple: Boolean = false
 
-    private val pickMedia = registerForActivityResult(
+    private val pickSingleMedia = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia(),
     ) { uri: Uri? ->
         if (uri == null) {
@@ -34,7 +35,22 @@ class NativeImagePickerActivity : ComponentActivity() {
         if (path == null) {
             finishCanceled()
         } else {
-            finishWithPath(path)
+            finishWithPaths(listOf(path))
+        }
+    }
+
+    private val pickMultipleMedia = registerForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(),
+    ) { uris: List<Uri> ->
+        if (uris.isEmpty()) {
+            finishCanceled()
+            return@registerForActivityResult
+        }
+        val paths: List<String> = uris.mapNotNull { uri -> copyUriToCache(uri) }
+        if (paths.isEmpty()) {
+            finishCanceled()
+        } else {
+            finishWithPaths(paths)
         }
     }
 
@@ -43,7 +59,7 @@ class NativeImagePickerActivity : ComponentActivity() {
     ) { success: Boolean ->
         val path: String? = cameraPhotoFile?.absolutePath
         if (success && path != null) {
-            finishWithPath(path)
+            finishWithPaths(listOf(path))
         } else {
             finishCanceled()
         }
@@ -68,6 +84,7 @@ class NativeImagePickerActivity : ComponentActivity() {
             return
         }
         hasLaunchedPicker = true
+        allowMultiple = intent.getBooleanExtra(EXTRA_ALLOW_MULTIPLE, false)
         when (intent.getStringExtra(EXTRA_MODE)) {
             MODE_GALLERY -> launchGallery()
             MODE_CAMERA -> openCameraWithPermission()
@@ -76,11 +93,14 @@ class NativeImagePickerActivity : ComponentActivity() {
     }
 
     private fun launchGallery() {
-        pickMedia.launch(
-            PickVisualMediaRequest(
-                ActivityResultContracts.PickVisualMedia.ImageOnly,
-            ),
+        val request = PickVisualMediaRequest(
+            ActivityResultContracts.PickVisualMedia.ImageOnly,
         )
+        if (allowMultiple) {
+            pickMultipleMedia.launch(request)
+        } else {
+            pickSingleMedia.launch(request)
+        }
     }
 
     private fun openCameraWithPermission() {
@@ -120,10 +140,12 @@ class NativeImagePickerActivity : ComponentActivity() {
         }
     }
 
-    private fun finishWithPath(path: String) {
+    private fun finishWithPaths(paths: List<String>) {
         setResult(
             RESULT_OK,
-            Intent().putExtra(EXTRA_PATH, path),
+            Intent()
+                .putStringArrayListExtra(EXTRA_PATHS, ArrayList(paths))
+                .putExtra(EXTRA_PATH, paths.firstOrNull()),
         )
         finish()
     }
@@ -136,12 +158,19 @@ class NativeImagePickerActivity : ComponentActivity() {
     companion object {
         const val EXTRA_MODE: String = "mode"
         const val EXTRA_PATH: String = "path"
+        const val EXTRA_PATHS: String = "paths"
+        const val EXTRA_ALLOW_MULTIPLE: String = "allow_multiple"
         const val MODE_GALLERY: String = "gallery"
         const val MODE_CAMERA: String = "camera"
 
-        fun createIntent(context: Context, mode: String): Intent {
+        fun createIntent(
+            context: Context,
+            mode: String,
+            allowMultiple: Boolean = false,
+        ): Intent {
             return Intent(context, NativeImagePickerActivity::class.java)
                 .putExtra(EXTRA_MODE, mode)
+                .putExtra(EXTRA_ALLOW_MULTIPLE, allowMultiple)
         }
     }
 }

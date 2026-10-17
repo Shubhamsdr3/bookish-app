@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:network_service/data/reader.dart';
 import 'package:network_service/util/user_store.dart';
 
+import '../../firebase/firestore_util.dart';
 import '../../home/screens/home_screen.dart';
 import '../../util/utility.dart';
 import '../data/onboarding_repository.dart';
@@ -24,7 +25,7 @@ class OtpVerificationController extends GetxController {
   final TextEditingController otpEditController = TextEditingController();
   final FocusNode otpFocus = FocusNode();
 
-  RxBool _isLoading = false.obs;
+  final RxBool _isLoading = false.obs;
   RxBool get isLoading => _isLoading;
 
   RxString otpCode = "".obs;
@@ -186,8 +187,10 @@ class OtpVerificationController extends GetxController {
   }
 
   Future<Map<String, dynamic>> _getUserPayload() async {
-    String userId = await UserStore.getUserId();
+    final String userId = await UserStore.getUserId();
+    final String? idToken = await FireStoreUtil.getFirebaseIdToken();
     return <String, dynamic>{
+      if (idToken != null && idToken.isNotEmpty) 'idToken': idToken,
       if (userId.isNotEmpty) 'userId': userId,
       'privacy': 0,
       'createdAt': DateTime.now().millisecondsSinceEpoch,

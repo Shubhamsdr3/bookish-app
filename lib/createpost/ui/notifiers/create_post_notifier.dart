@@ -4,22 +4,23 @@ import 'package:bookish/createpost/domain/usecases/create_post_usecase.dart';
 import 'package:bookish/createpost/ui/notifiers/create_post_state.dart';
 import 'package:bookish/createpost/ui/providers/create_post_providers.dart';
 import 'package:bookish/data/book_detail.dart';
+import 'package:bookish/native/native_image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:network_service/util/user_store.dart';
+import 'package:path/path.dart' as path;
 
 class CreatePostNotifier extends Notifier<CreatePostState> {
+
   late final CreatePostUseCase _createPostUseCase;
-  final ImagePicker _imagePicker = ImagePicker();
+  final NativeImagePicker _nativeImagePicker = NativeImagePicker.instance;
 
   @override
   CreatePostState build() {
     _createPostUseCase = ref.watch(createPostUseCaseProvider);
     return const CreatePostState();
   }
-
 
   void onCaptionChanged(String value) {
     state = state.copyWith(caption: value);
@@ -47,35 +48,39 @@ class CreatePostNotifier extends Notifier<CreatePostState> {
     );
   }
 
-  // ─── Image Picking ────────────────────────────────────────────────────
-
-  Future<void> pickImagesFromGallery() async {
-    final pickedFiles = await _imagePicker.pickMultiImage(imageQuality: 25);
-    if (pickedFiles.isNotEmpty) {
-      state = state.copyWith(
-        imageFiles: [...state.imageFiles, ...pickedFiles],
-      );
+  Future<void> openGallery() async {
+    final List<String> paths =
+        await _nativeImagePicker.pickFromGallery(allowMultiple: true);
+    if (paths.isEmpty) {
+      return;
     }
+    state = state.copyWith(
+      imagePaths: [...state.imagePaths, ...paths],
+    );
   }
 
-  void onCameraFileReceived(XFile file) {
+  Future<void> openCamera() async {
+    final List<String> paths = await _nativeImagePicker.pickFromCamera();
+    if (paths.isEmpty) {
+      return;
+    }
     state = state.copyWith(
-      imageFiles: [...state.imageFiles, file],
+      imagePaths: [...state.imagePaths, ...paths],
     );
   }
 
   void removeImage(int index) {
-    final updatedFiles = List<XFile>.from(state.imageFiles)..removeAt(index);
-    state = state.copyWith(imageFiles: updatedFiles);
+    final List<String> updatedPaths = List<String>.from(state.imagePaths)
+      ..removeAt(index);
+    state = state.copyWith(imagePaths: updatedPaths);
   }
 
-  // ─── Firebase Upload ──────────────────────────────────────────────────
-
-  Future<String> _uploadImageFile(XFile imageFile) async {
+  Future<String> _uploadImageFile(String imagePath) async {
     try {
-      final file = File(imageFile.path);
+      final file = File(imagePath);
+      final String fileName = path.basename(imagePath);
       final storageRef =
-          FirebaseStorage.instance.ref('post/images/${imageFile.name}');
+          FirebaseStorage.instance.ref('post/images/$fileName');
       final snapshot = await storageRef.putFile(
         file,
         SettableMetadata(contentType: 'image/jpeg'),
@@ -87,8 +92,6 @@ class CreatePostNotifier extends Notifier<CreatePostState> {
     }
   }
 
-  // ─── Create Post ──────────────────────────────────────────────────────
-
   Future<bool> createPost() async {
     if (!state.canPost) return false;
 
@@ -96,7 +99,7 @@ class CreatePostNotifier extends Notifier<CreatePostState> {
 
     try {
       final downloadedUrls = await Future.wait(
-        state.imageFiles.map((image) => _uploadImageFile(image)),
+        state.imagePaths.map(_uploadImageFile),
       );
 
       final userId = await UserStore.getUserId();

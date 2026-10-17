@@ -27,7 +27,7 @@ class _Config {
   static const BASE_URL = "base_url";
 
   static Map<String, dynamic> debugConstants = {
-    BASE_URL: "http://192.168.0.5:3000",
+    BASE_URL: "http://localhost:3000",
   };
 
   static Map<String, dynamic> prodConstants = {

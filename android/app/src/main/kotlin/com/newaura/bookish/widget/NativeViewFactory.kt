@@ -1,6 +1,7 @@
 package com.newaura.bookish.widget
 
 import android.content.Context
+import com.newaura.bookish.profile.ProfilePlatformView
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
@@ -26,6 +27,7 @@ internal class NativeViewFactory(
                 viewId,
                 creationParams as Map<String, Any>?,
             )
+            PROFILE_VIEW_TYPE -> ProfilePlatformView(context)
             else -> error("Unknown platform view type: $viewType")
         }
     }
@@ -33,5 +35,6 @@ internal class NativeViewFactory(
     companion object {
         const val HYBRID_VIEW_TYPE: String = "hybrid-view-type"
         const val COMPOSE_VIEW_TYPE: String = "compose-view-type"
+        const val PROFILE_VIEW_TYPE: String = "profile-compose-view"
     }
 }

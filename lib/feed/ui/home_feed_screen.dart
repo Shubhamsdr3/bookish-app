@@ -4,6 +4,7 @@ import 'package:bookish/feed/ui/provider/home_feed_state.dart';
 import 'package:bookish/profile/ui/screens/user_profile_screen.dart';
 import 'package:bookish/uikit/bookish_size.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widget_previews.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,12 +37,14 @@ class HomeFeedScreen extends ConsumerWidget {
         child: AppBar(
           scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
-          title: Padding(
-            padding: EdgeInsets.only(top: size.regularPadding),
-            child: Text(
-              "Home",
-              style: GoogleFonts.roboto(fontWeight: FontWeight.w400),
-            ),
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.white,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.light,
+          ),
+          title: Text(
+            "Home",
+            style: GoogleFonts.roboto(fontWeight: FontWeight.w400),
           ),
           actions: [
             Padding(
