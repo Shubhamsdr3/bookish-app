@@ -1,0 +1,218 @@
+workflows:
+
+  # ────────────────────────────────────────────────────────────────────────
+  # ANDROID — Build & Publish to Play Store (Internal Testing)
+  # ────────────────────────────────────────────────────────────────────────
+  android-production:
+    name: Android Production
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      java: 17
+      groups:
+        - google_play          # Must contain: GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        - android_keystore     # Must contain: CM_KEYSTORE, CM_KEY_PASSWORD, CM_KEY_ALIAS, CM_KEYSTORE_PASSWORD
+      vars:
+        PACKAGE_NAME: "com.newaura.bookish"
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: "v*"
+          include: true
+    scripts:
+      - name: Set up key.properties
+        script: |
+          echo "storePassword=$CM_KEYSTORE_PASSWORD" > "$CM_BUILD_DIR/android/key.properties"
+          echo "keyPassword=$CM_KEY_PASSWORD" >> "$CM_BUILD_DIR/android/key.properties"
+          echo "keyAlias=$CM_KEY_ALIAS" >> "$CM_BUILD_DIR/android/key.properties"
+          echo "storeFile=$CM_KEYSTORE" >> "$CM_BUILD_DIR/android/key.properties"
+
+      - name: Set up local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+
+      - name: Build AAB (prod flavor)
+        script: |
+          BUILD_NUM=${PROJECT_BUILD_NUMBER:-1}
+          flutter build appbundle \
+            --release \
+            --flavor prod \
+            -t lib/main.dart \
+            --build-number=$BUILD_NUM
+          # Debug: show output location
+          echo "AAB output:"
+          find build -name "*.aab" -type f 2>/dev/null || echo "No AAB found"
+
+    artifacts:
+      - build/app/outputs/bundle/prodRelease/*.aab
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/mapping.txt
+      - flutter_drive.log
+
+    publishing:
+      email:
+        recipients:
+          - shubhamsdr3@gmail.com
+        notify:
+          success: true
+          failure: true
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: true
+
+  # ────────────────────────────────────────────────────────────────────────
+  # iOS — Build & Publish to TestFlight (App Store Connect)
+  # ────────────────────────────────────────────────────────────────────────
+  ios-production:
+    name: iOS Production
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: Bookish ASC    # Name of App Store Connect integration in Codemagic
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.newaura.bookish
+      groups:
+        - app_store_connect    # Must contain: APP_STORE_CONNECT_KEY_IDENTIFIER, APP_STORE_CONNECT_ISSUER_ID, APP_STORE_CONNECT_PRIVATE_KEY
+      vars:
+        APP_STORE_APP_ID: "6739885091"    # Replace with your App Store ID
+        BUNDLE_ID: "com.newaura.bookish"
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: "v*"
+          include: true
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+
+      - name: Install CocoaPods
+        script: |
+          cd ios && pod install
+
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles
+          # Debug: list available profiles
+          echo "Available profiles:"
+          ls ~/Library/MobileDevice/Provisioning\ Profiles/ || true
+
+      - name: Build IPA
+        script: |
+          flutter build ipa \
+            --release \
+            -t lib/main.dart \
+            --build-number=$PROJECT_BUILD_NUMBER \
+            --export-options-plist=/Users/builder/export_options.plist
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+
+    publishing:
+      email:
+        recipients:
+          - shubhamsdr3@gmail.com
+        notify:
+          success: true
+          failure: true
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        expire_build_submitted_for_review: true
+
+  # ────────────────────────────────────────────────────────────────────────
+  # DEV — Quick build for testing (no publishing)
+  # ────────────────────────────────────────────────────────────────────────
+  dev-build:
+    name: Dev Build (APK + IPA)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: Bookish ASC
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      java: 17
+      ios_signing:
+        distribution_type: development
+        bundle_identifier: com.newaura.bookish
+      groups:
+        - android_keystore
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: "develop"
+          include: true
+    scripts:
+      - name: Set up key.properties
+        script: |
+          echo "storePassword=$CM_KEYSTORE_PASSWORD" > "$CM_BUILD_DIR/android/key.properties"
+          echo "keyPassword=$CM_KEY_PASSWORD" >> "$CM_BUILD_DIR/android/key.properties"
+          echo "keyAlias=$CM_KEY_ALIAS" >> "$CM_BUILD_DIR/android/key.properties"
+          echo "storeFile=$CM_KEYSTORE" >> "$CM_BUILD_DIR/android/key.properties"
+
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+
+      - name: Build APK (dev flavor)
+        script: |
+          flutter build apk --release --flavor dev -t lib/main.dart
+
+      - name: Install CocoaPods
+        script: |
+          cd ios && pod install
+
+      - name: Set up iOS code signing
+        script: |
+          xcode-project use-profiles
+
+      - name: Build IPA (dev flavor)
+        script: |
+          flutter build ipa \
+            --release \
+            --flavor dev \
+            -t lib/main.dart \
+            --export-options-plist=/Users/builder/export_options.plist
+
+      - name: Build asset showcase
+        script: |
+          rm -rf "$CM_BUILD_DIR/hosting"
+          mkdir -p "$CM_BUILD_DIR/hosting"
+          rsync -a --exclude 'env/' "$CM_BUILD_DIR/assets/" "$CM_BUILD_DIR/hosting/assets/"
+          cd "$CM_BUILD_DIR/hosting"
+          dart run asset_showcase --assets=assets --output=index.html
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-dev-release.apk
+      - build/**/outputs/**/*.apk
+      - build/ios/ipa/*.ipa
+      - hosting/**
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+
+    publishing:
+      email:
+        recipients:
+          - shubhamsdr3@gmail.com
+        notify:
+          success: false
+          failure: true
+
