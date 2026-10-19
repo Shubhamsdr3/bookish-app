@@ -67,6 +67,10 @@ flutter {
     source = "../.."
 }
 
+configurations.configureEach {
+    exclude(group = "com.google.android.play", module = "core-common")
+}
+
 dependencies {
     implementation("androidx.compose.material3:material3:1.4.0")
     implementation("androidx.compose.material:material-icons-core:1.7.8")
@@ -75,5 +79,6 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("io.coil-kt:coil-compose:2.7.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    implementation("com.google.android.play:core:1.8.0")
     debugImplementation("androidx.compose.ui:ui-tooling:1.12.1")
 }

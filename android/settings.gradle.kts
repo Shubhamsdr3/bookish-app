@@ -26,4 +26,4 @@ plugins {
 }
 
 rootProject.name = "bookish"
-include(":app")
+include(":app", ":webviewComponent")

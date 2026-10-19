@@ -1,3 +1,4 @@
+import 'package:network_service/util/constants.dart';
 import 'package:network_service/util/user_store.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -11,7 +12,7 @@ class SocketService {
 
   SocketService._internal();
 
-  static String socketUrl = 'http://192.168.0.5:3000';
+  static String socketUrl = Constants.SOCKET_URL;
 
   Future<void> initSocket() async {
     final authToken  = await UserStore.getAuthToken();

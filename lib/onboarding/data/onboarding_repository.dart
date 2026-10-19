@@ -18,8 +18,10 @@ class OnboardingRepository extends IOnboardingRepository {
   @override
   Future<ApiResponse<UserData>> loginUser(Map<String, dynamic> payload) async {
     try {
+      final String? idToken = payload['idToken'];
+      final String? bearerToken = idToken is String ? idToken : null;
       return await NetworkManager().makeNetworkCall(
-        api: _authApiService.authenticate,
+        api: _authApiService.authenticate(bearerToken: bearerToken),
         converter: (json) => UserData.fromJson(json),
         body: payload,
         resultKey: 'data'
