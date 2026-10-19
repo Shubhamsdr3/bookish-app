@@ -1,3 +1,4 @@
+import 'package:bookish/webview/webview_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:network_service/base_api_service.dart';
@@ -11,6 +12,15 @@ class AccountSettingController extends GetxController {
         iconUrl: '',
         onClick: () {
           ApiService().alice.showInspector();
+        },
+      ),
+    if (kDebugMode)
+      AccountSetting(
+        title: 'Open webview',
+        subtitle: '',
+        iconUrl: '',
+        onClick: () {
+          Get.toNamed(webviewRouteName);
         },
       ),
   ];

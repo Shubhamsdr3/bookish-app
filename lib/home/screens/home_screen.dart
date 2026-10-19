@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:bookish/createpost/ui/create_post_screen_v2.dart';
 import 'package:bookish/home/controller/home_screen_controller.dart';
+import 'package:bookish/native/native_profile_tab.dart';
 import 'package:bookish/profile/ui/screens/user_profile_screen.dart';
 import 'package:bookish/util/app_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -11,53 +15,73 @@ import '../../feed/ui/home_feed_screen.dart';
 class HomeScreen extends GetView<HomeScreenController> {
   static String routeName = "/home";
 
-  final List<Widget> _pages = [HomeFeedScreen(), CreatePostScreen(), UserProfileScreen()];
+  static const SystemUiOverlayStyle _statusBarStyle = SystemUiOverlayStyle(
+    statusBarColor: Colors.white,
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
+  );
+
+  final List<Widget> _pages = [
+    HomeFeedScreen(),
+    CreatePostScreen(),
+    Platform.isAndroid ? const NativeProfileTab() : const UserProfileScreen(),
+  ];
 
   HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => PopScope(
-        canPop: AppState().tabIndex.value == 0,
-        onPopInvokedWithResult: (didPop, result) {
-          if (didPop) return;
-          if (AppState().tabIndex.value == 1) {
-            _showPostExitDialog();
-          } else if (AppState().tabIndex.value > 0) {
-            AppState().tabIndex.value = 0;
-          }
-        },
-        child: Scaffold(
-          body: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [Expanded(child: Obx(() => _pages[AppState().tabIndex.value]))],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: _statusBarStyle,
+      child: Obx(
+        () => PopScope(
+          canPop: AppState().tabIndex.value == 0,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            if (AppState().tabIndex.value == 1) {
+              _showPostExitDialog();
+            } else if (AppState().tabIndex.value > 0) {
+              AppState().tabIndex.value = 0;
+            }
+          },
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            // top: false — AppBars draw under the status bar; SafeArea was leaving a
+            // mismatched strip above the toolbar.
+            body: SafeArea(
+              top: false,
+              bottom: false,
+              child: Obx(
+                () => IndexedStack(
+                  index: AppState().tabIndex.value,
+                  children: _pages,
+                ),
+              ),
             ),
-          ),
-          bottomNavigationBar: Obx(
-            () => BottomNavigationBar(
-              showUnselectedLabels: true,
-              currentIndex: AppState().tabIndex.value,
-              backgroundColor: Colors.white,
-              elevation: 10.r,
-              onTap: (index) {
-                AppState().tabIndex.value = index;
-              },
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.post_add),
-                  label: 'Post',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Profile',
-                ),
-              ],
+            bottomNavigationBar: Obx(
+              () => BottomNavigationBar(
+                showUnselectedLabels: true,
+                currentIndex: AppState().tabIndex.value,
+                backgroundColor: Colors.white,
+                elevation: 10.r,
+                onTap: (index) {
+                  AppState().tabIndex.value = index;
+                },
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.post_add),
+                    label: 'Post',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.person),
+                    label: 'Profile',
+                  ),
+                ],
+              ),
             ),
           ),
         ),

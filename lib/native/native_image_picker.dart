@@ -1,45 +1,72 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
+import 'package:bookish/native/generated/native_image_api.g.dart';
 
-/// Dart side of [com.newaura.bookish/native_image].
+/// Dart facade over Pigeon [NativeImageHostApi] / [NativeImageFlutterApi].
 ///
-/// Native opens gallery/camera; picked file paths arrive on [images].
-class NativeImagePicker {
+/// Prefer [pickFromGallery] / [pickFromCamera] (one-shot). The broadcast
+/// [imageBatches] stream is for demos that only observe picks.
+class NativeImagePicker implements NativeImageFlutterApi {
   NativeImagePicker._() {
-    _channel.setMethodCallHandler(_onMethodCall);
+    NativeImageFlutterApi.setUp(this);
   }
 
   static final NativeImagePicker instance = NativeImagePicker._();
 
-  static const MethodChannel _channel =
-      MethodChannel('com.newaura.bookish/native_image');
+  final NativeImageHostApi _hostApi = NativeImageHostApi();
+  final StreamController<List<String>> _batchesController =
+      StreamController<List<String>>.broadcast();
 
-  final StreamController<String> _imagesController =
-      StreamController<String>.broadcast();
+  Completer<List<String>>? _pendingPick;
 
-  Stream<String> get images => _imagesController.stream;
+  /// One event per picker result (may contain multiple gallery paths).
+  Stream<List<String>> get imageBatches => _batchesController.stream;
 
-  Future<void> openGallery() {
-    return _channel.invokeMethod<void>('openGallery');
+  /// Flattened single-path stream.
+  Stream<String> get images =>
+      imageBatches.expand((List<String> paths) => paths);
+
+  Future<List<String>> pickFromGallery({bool allowMultiple = false}) {
+    return _startPick(() => _hostApi.openGallery(allowMultiple));
+  }
+
+  Future<List<String>> pickFromCamera() {
+    return _startPick(_hostApi.openCamera);
+  }
+
+  /// Fire-and-forget open (demo / Compose). Prefer [pickFromGallery].
+  Future<void> openGallery({bool allowMultiple = false}) {
+    return _hostApi.openGallery(allowMultiple);
   }
 
   Future<void> openCamera() {
-    return _channel.invokeMethod<void>('openCamera');
+    return _hostApi.openCamera();
   }
 
-  Future<void> _onMethodCall(MethodCall call) async {
-    if (call.method != 'onImagePicked') {
-      return;
+  Future<List<String>> _startPick(Future<void> Function() openNative) {
+    if (_pendingPick != null && !_pendingPick!.isCompleted) {
+      _pendingPick!.complete(const <String>[]);
     }
-    final Object? arguments = call.arguments;
-    if (arguments is! Map) {
-      return;
+    final Completer<List<String>> completer = Completer<List<String>>();
+    _pendingPick = completer;
+    openNative().catchError((Object error, StackTrace stackTrace) {
+      if (!completer.isCompleted) {
+        completer.completeError(error, stackTrace);
+      }
+    });
+    return completer.future;
+  }
+
+  @override
+  void onImagesPicked(List<String> paths) {
+    final List<String> safePaths = List<String>.unmodifiable(paths);
+    if (_pendingPick != null && !_pendingPick!.isCompleted) {
+      _pendingPick!.complete(safePaths);
+      _pendingPick = null;
     }
-    final Object? path = arguments['path'];
-    if (path is! String || path.isEmpty) {
-      return;
+    // Empty list = user canceled; still complete the pending Future above.
+    if (safePaths.isNotEmpty) {
+      _batchesController.add(safePaths);
     }
-    _imagesController.add(path);
   }
 }

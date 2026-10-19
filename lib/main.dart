@@ -27,8 +27,12 @@ Future main() async {
       WidgetsFlutterBinding.ensureInitialized();
   // Keep native splash visible until Flutter SplashScreen is ready.
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  // The flavor google-services.json already created [DEFAULT].
+  // Debug FirebaseOptions clash with the prod project and throw duplicate-app.
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: defaultTargetPlatform == TargetPlatform.android
+        ? null
+        : DefaultFirebaseOptions.currentPlatform,
   );
   _handleUncaughtErrors();
   await Permission.notification.isDenied.then((value) {
@@ -49,12 +53,7 @@ Future main() async {
     );
   }
   await PushNotificationService().setupInteractedMessage();
-  Constants.setEnvironment(Environment.PROD);
-  // if (AppEnvironment().isDebugMode) {
-  //   Constants.setEnvironment(Environment.DEV);
-  // } else {
-  //   Constants.setEnvironment(Environment.PROD);
-  // }
+  Constants.setEnvironment(environmentFromName(appEnvName));
   await ApiService().initialize(
     onSessionExpired: () {
       // Handle session expiry — e.g., navigate to login screen

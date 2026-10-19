@@ -1,19 +1,34 @@
 import 'dart:collection';
 
-enum Environment { DEV, PROD }
+enum Environment { staging, production }
+
+const String appEnvName = String.fromEnvironment(
+  'APP_ENV',
+  defaultValue: 'staging',
+);
+
+Environment environmentFromName(String name) {
+  switch (name) {
+    case 'production':
+      return Environment.production;
+    default:
+      return Environment.staging;
+  }
+}
 
 class Constants {
   static const TNC_URL = "https://bookissh-web.web.app/";
+  static const SOCKET_URL = 'http://192.168.0.5:3000';
 
   static Map<String, dynamic> _config = HashMap();
 
   static void setEnvironment(Environment env) {
     switch (env) {
-      case Environment.DEV:
-        _config = _Config.debugConstants;
+      case Environment.staging:
+        _config = _Config.stagingConstants;
         break;
-      case Environment.PROD:
-        _config = _Config.prodConstants;
+      case Environment.production:
+        _config = _Config.productionConstants;
         break;
     }
   }
@@ -26,11 +41,11 @@ class Constants {
 class _Config {
   static const BASE_URL = "base_url";
 
-  static Map<String, dynamic> debugConstants = {
-    BASE_URL: "http://192.168.0.5:3000",
+  static Map<String, dynamic> get stagingConstants => {
+    BASE_URL: "http://localhost:3000",
   };
 
-  static Map<String, dynamic> prodConstants = {
+  static Map<String, dynamic> get productionConstants => {
     BASE_URL: "https://20241221t151330-dot-bookish-5aae7.df.r.appspot.com",
   };
 }

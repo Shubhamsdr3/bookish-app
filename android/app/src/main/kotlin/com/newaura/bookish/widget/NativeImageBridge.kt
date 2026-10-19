@@ -2,50 +2,38 @@ package com.newaura.bookish.widget
 
 import android.os.Handler
 import android.os.Looper
+import com.newaura.bookish.native.NativeImageFlutterApi
+import com.newaura.bookish.native.NativeImageHostApi
 import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodChannel
 
 /**
- * Bridges native gallery/camera picks to Flutter over a [MethodChannel].
- * [com.newaura.bookish.MainActivity] starts [com.newaura.bookish.media.NativeImagePickerActivity]
- * and forwards the returned file path here.
- *
- * Dart may call `openGallery` / `openCamera`; native emits `onImagePicked`.
+ * Pigeon host wiring for gallery/camera.
+ * [com.newaura.bookish.MainActivity] supplies Activity launchers.
  */
-object NativeImageBridge {
-
-    const val CHANNEL: String = "com.newaura.bookish/native_image"
+object NativeImageBridge : NativeImageHostApi {
 
     private val mainHandler: Handler = Handler(Looper.getMainLooper())
-    private var channel: MethodChannel? = null
-    private var openGalleryAction: (() -> Unit)? = null
+    private var messenger: BinaryMessenger? = null
+    private var flutterApi: NativeImageFlutterApi? = null
+    private var openGalleryAction: ((Boolean) -> Unit)? = null
     private var openCameraAction: (() -> Unit)? = null
 
-    fun attachChannel(messenger: BinaryMessenger) {
-        channel = MethodChannel(messenger, CHANNEL).apply {
-            setMethodCallHandler { call, result ->
-                when (call.method) {
-                    "openGallery" -> {
-                        openGallery()
-                        result.success(null)
-                    }
-                    "openCamera" -> {
-                        openCamera()
-                        result.success(null)
-                    }
-                    else -> result.notImplemented()
-                }
-            }
-        }
+    fun attach(binaryMessenger: BinaryMessenger) {
+        messenger = binaryMessenger
+        flutterApi = NativeImageFlutterApi(binaryMessenger)
+        NativeImageHostApi.setUp(binaryMessenger, this)
     }
 
-    fun detachChannel() {
-        channel?.setMethodCallHandler(null)
-        channel = null
+    fun detach() {
+        messenger?.let { binaryMessenger ->
+            NativeImageHostApi.setUp(binaryMessenger, null)
+        }
+        messenger = null
+        flutterApi = null
     }
 
     fun attachLaunchers(
-        openGallery: () -> Unit,
+        openGallery: (allowMultiple: Boolean) -> Unit,
         openCamera: () -> Unit,
     ) {
         openGalleryAction = openGallery
@@ -57,20 +45,20 @@ object NativeImageBridge {
         openCameraAction = null
     }
 
-    fun openGallery() {
-        openGalleryAction?.invoke()
+    override fun openGallery(allowMultiple: Boolean) {
+        openGalleryAction?.invoke(allowMultiple)
     }
 
-    fun openCamera() {
+    override fun openCamera() {
         openCameraAction?.invoke()
     }
 
-    fun emitImagePath(path: String) {
+    fun emitImagePaths(paths: List<String>) {
+        if (paths.isEmpty()) {
+            return
+        }
         mainHandler.post {
-            channel?.invokeMethod(
-                "onImagePicked",
-                mapOf("path" to path),
-            )
+            flutterApi?.onImagesPicked(paths) { /* ignore callback result */ }
         }
     }
 }

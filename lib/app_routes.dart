@@ -22,7 +22,7 @@ import 'package:bookish/settings/account_setting_controller.dart';
 import 'package:bookish/settings/account_setting_screen.dart';
 import 'package:bookish/topics/controller/book_topics_controller.dart';
 import 'package:bookish/topics/screens/select_topics_screen.dart';
-import 'package:bookish/webview/in_app_webview.dart';
+import 'package:bookish/webview/webview_route.dart';
 import 'package:get/get.dart';
 import 'onboarding/controller/otp_verification_controller.dart';
 import 'onboarding/data/auth_api_service.dart';
@@ -72,7 +72,7 @@ final List<GetPage> appRoutes = [
         Get.lazyPut(() => PostPreviewController((Get.arguments as FeedData)),
             fenix: true);
       })),
-  GetPage(name: InAppWebView.routeName, page: () => InAppWebView()),
+  GetPage(name: webviewRouteName, page: () => const WebViewRoute()),
   GetPage(
       name: FeedDetailScreen.routeName,
       page: () => FeedDetailScreen(),

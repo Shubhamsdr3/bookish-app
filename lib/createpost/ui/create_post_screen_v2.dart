@@ -5,17 +5,14 @@ import 'package:bookish/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 
+import '../../home/screens/home_screen.dart';
 import '../../search/ui/screens/search_suggestion_screen.dart';
 import '../../util/app_state.dart';
 import '../../util/enums.dart';
 import '../../widgets/profile_widget.dart';
-import '../../home/screens/home_screen.dart';
-import '../../home/screens/camera_screen.dart';
-import 'package:camera/camera.dart';
-import 'package:get/get.dart';
 
 class CreatePostScreen extends ConsumerStatefulWidget {
   static String routeName = "/createPost";
@@ -134,9 +131,9 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                     SizedBox(height: 24.r),
                     GestureDetector(
                       onTap: () => _pickPhotos(context, notifier),
-                      child: state.imageFiles.isNotEmpty
+                      child: state.imagePaths.isNotEmpty
                           ? ImageGridWidget(
-                              imageFiles: state.imageFiles,
+                              imagePaths: state.imagePaths,
                               onRemoved: (index) =>
                                   notifier.removeImage(index),
                             )
@@ -213,28 +210,17 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
     showModalBottomSheet(
       context: context,
       builder: (builder) => ProfileWidget(
-        onChosePictureClicked: (ImageSource source) {
+        onChosePictureClicked: (NativePickSource source) {
           Navigator.pop(context);
           switch (source) {
-            case ImageSource.camera:
-              _onCameraClicked(notifier);
-              break;
-            case ImageSource.gallery:
-              notifier.pickImagesFromGallery();
-              break;
+            case NativePickSource.camera:
+              notifier.openCamera();
+            case NativePickSource.gallery:
+              notifier.openGallery();
           }
         },
       ),
     );
-  }
-
-  void _onCameraClicked(dynamic notifier) async {
-    final cameras = await availableCameras();
-    final XFile file = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => CameraScreen(cameras: cameras)),
-    );
-    notifier.onCameraFileReceived(file);
   }
 
   Widget _buildImageUploadCard(BuildContext context, dynamic notifier) {

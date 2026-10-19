@@ -2,8 +2,10 @@ import 'package:bookish/util/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
+import 'package:network_service/util/user_store.dart';
 
-import '../native/native_android_plugin.dart';
+import '../home/screens/home_screen.dart';
+import '../onboarding/screen/bookish_login_screen.dart';
 
 /// Flutter splash must match native splash (white + centered logo).
 /// Native assets are generated from [flutter_native_splash.yaml].
@@ -54,16 +56,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToHome() async {
-    if (!mounted) {
-      return;
+    // Get.offNamed(NativeAndroidPlugin.routeName);
+    final userLogged = await UserStore.isUserLoggedIn();
+    if (!mounted) return;
+    if (userLogged) {
+      Get.offNamed(HomeScreen.routeName);
+    } else {
+      Get.offNamed(LoginScreen.routeName);
     }
-    Get.offNamed(NativeAndroidPlugin.routeName);
-    // final userLogged = await UserStore.isUserLoggedIn();
-    // if (!mounted) return;
-    // if (userLogged) {
-    //   Get.offNamed(HomeScreen.routeName);
-    // } else {
-    //   Get.offNamed(LoginScreen.routeName);
-    // }
   }
 }

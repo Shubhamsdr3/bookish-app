@@ -1,0 +1,10 @@
+# Source for the Android launcher icon.
+# Regenerate after logo changes:
+#   fvm flutter pub get
+#   fvm dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: assets/image/logo.png
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: assets/image/logo.png

@@ -61,8 +61,9 @@ class UserProfileScreen extends ConsumerWidget {
         Text('Error: $message'),
         const SizedBox(height: 16),
         ElevatedButton(
-          onPressed: () =>
-              ref.read(profileNotifierProvider.notifier).fetchUserProfile(),
+          onPressed: () => ref
+              .read(profileNotifierProvider.notifier)
+              .fetchUserProfile(force: true),
           child: const Text('Retry'),
         ),
       ],

@@ -1,0 +1,73 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader("UTF-8") { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
+if (flutterVersionCode == null) {
+    flutterVersionCode = "1"
+}
+
+def flutterVersionName = localProperties.getProperty("flutter.versionName")
+if (flutterVersionName == null) {
+    flutterVersionName = "1.0"
+}
+
+apply plugin: "com.android.dynamic-feature"
+
+android {
+    namespace = "com.newaura.bookish.webviewComponent"
+    compileSdk = 37
+    ndkVersion = "28.2.13676358"
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        applicationVariants.all { variant ->
+            // Flutter writes these under the build type (release), not the flavor variant (devRelease).
+            def buildMode = variant.buildType.name
+            main.assets.srcDirs += project.layout.buildDirectory.dir("intermediates/flutter/${buildMode}/deferred_assets")
+            main.jniLibs.srcDirs += project.layout.buildDirectory.dir("intermediates/flutter/${buildMode}/deferred_libs")
+        }
+    }
+
+    defaultConfig {
+        minSdk = 24
+        targetSdk = 36
+        versionCode = flutterVersionCode.toInteger()
+        versionName = flutterVersionName
+    }
+
+    flavorDimensions += "environment"
+    productFlavors {
+        dev {
+            dimension = "environment"
+        }
+        prod {
+            dimension = "environment"
+        }
+    }
+}
+
+dependencies {
+    implementation(project(":app"))
+}
+
+afterEvaluate {
+    android.applicationVariants.all { variant ->
+        def variantName = variant.name.capitalize()
+        def flutterCompile = ":app:compileFlutterBuild${variantName}"
+        ["merge${variantName}Assets", "merge${variantName}JniLibFolders"].each { taskName ->
+            def mergeTask = tasks.findByName(taskName)
+            if (mergeTask != null) {
+                mergeTask.dependsOn(flutterCompile)
+            }
+        }
+    }
+}

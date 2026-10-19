@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bookish/firebase/firestore_util.dart';
 import 'package:bookish/onboarding/data/auth_api_service.dart';
 import 'package:bookish/onboarding/data/onboarding_repository.dart';
 import 'package:bookish/topics/screens/select_topics_screen.dart';
@@ -84,8 +85,10 @@ class EditProfileController extends GetxController {
   }
 
   Future<Map<String, dynamic>> _getUserDetails() async {
-    String userId = await UserStore.getUserId();
+    final String userId = await UserStore.getUserId();
+    final String? idToken = await FireStoreUtil.getFirebaseIdToken();
     return <String, dynamic>{
+      if (idToken != null && idToken.isNotEmpty) 'idToken': idToken,
       if (userId.isNotEmpty) 'userId': userId,
       if (userNameController.text.isNotEmpty)
         'userName': userNameController.text,
