@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bookish/native/native_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:google_mlkit_commons/google_mlkit_commons.dart';
@@ -109,6 +110,16 @@ class _GalleryViewState extends State<GalleryView> {
       _image = null;
       _path = null;
     });
+    if (Platform.isAndroid) {
+      final List<String> paths = source == ImageSource.gallery
+          ? await NativeImagePicker.instance.pickFromGallery()
+          : await NativeImagePicker.instance.pickFromCamera();
+      if (paths.isEmpty) {
+        return;
+      }
+      _processFile(paths.first);
+      return;
+    }
     final pickedFile = await _imagePicker?.pickImage(source: source);
     if (pickedFile != null) {
       _processFile(pickedFile.path);

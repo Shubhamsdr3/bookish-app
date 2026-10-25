@@ -54,9 +54,6 @@ object NativeImageBridge : NativeImageHostApi {
     }
 
     fun emitImagePaths(paths: List<String>) {
-        if (paths.isEmpty()) {
-            return
-        }
         mainHandler.post {
             flutterApi?.onImagesPicked(paths) { /* ignore callback result */ }
         }

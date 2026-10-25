@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bookish/native/native_image_picker.dart';
 import 'package:bookish/onboarding/data/auth_api_service.dart';
 import 'package:bookish/onboarding/data/onboarding_repository.dart';
 import 'package:bookish/onboarding/data/login_request.dart';
@@ -41,12 +42,24 @@ class EditProfileController extends GetxController {
 
   Future<void> onCameraClicked(ImageSource imageSource) async {
     Get.back();
-    _imagePicker.pickImage(source: imageSource, imageQuality: 25).then((
-      pickedFile,
-    ) {
+    if (Platform.isAndroid) {
+      final List<String> paths = imageSource == ImageSource.gallery
+          ? await NativeImagePicker.instance.pickFromGallery()
+          : await NativeImagePicker.instance.pickFromCamera();
+      if (paths.isEmpty) {
+        return;
+      }
+      final XFile pickedFile = XFile(paths.first);
       imageFile.value = pickedFile;
-      _uploadImageFile(imageFile.value);
-    });
+      _uploadImageFile(pickedFile);
+      return;
+    }
+    final XFile? pickedFile = await _imagePicker.pickImage(
+      source: imageSource,
+      imageQuality: 25,
+    );
+    imageFile.value = pickedFile;
+    _uploadImageFile(pickedFile);
   }
 
   void _uploadImageFile(XFile? imageFile) async {
