@@ -8,10 +8,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends GetView<EditProfileController> {
+
   static String routeName = "/edit-profile";
 
   final String phoneNumber;
-  EditProfileScreen({required this.phoneNumber});
+  const EditProfileScreen({super.key, required this.phoneNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +63,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                     enabledBorder: OutlineInputBorder(),
                     hintText: "@johndoe"),
                 onChanged: (newValue) {
-                  print(newValue);
+                  debugPrint(newValue);
                   controller.userNameController.text = newValue;
                 },
                 autofocus: true,
@@ -86,7 +87,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                     enabledBorder: OutlineInputBorder(),
                     hintText: "John Doe"),
                 onChanged: (newValue) {
-                  print(newValue);
+                  debugPrint(newValue);
                   controller.nameController.text = newValue;
                 },
                 autofocus: true,

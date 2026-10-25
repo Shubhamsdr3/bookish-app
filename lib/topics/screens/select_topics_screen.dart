@@ -10,7 +10,10 @@ import '../../data/chip_data.dart';
 import '../controller/book_topics_controller.dart';
 
 class SelectTopicsScreen extends GetView<SelectTopicController> {
+
   static String routeName = "/select-topics";
+
+  const SelectTopicsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

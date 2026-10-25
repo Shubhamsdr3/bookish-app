@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bookish/firebase/firestore_util.dart';
 import 'package:bookish/native/native_image_picker.dart';
 import 'package:bookish/profile/domain/entities/user_profile_entity.dart';
 import 'package:bookish/profile/domain/usecases/get_user_profile_usecase.dart';
@@ -17,23 +18,21 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   final GetUserProfileUseCase _getUserProfileUseCase;
   final UpdateProfileImageUseCase _updateProfileImageUseCase;
   final NativeImagePicker _nativeImagePicker;
+  final FireStoreUtil _fireStoreUtil = FireStoreUtil();
 
   ProfileNotifier({
     required GetUserProfileUseCase getUserProfileUseCase,
     required UpdateProfileImageUseCase updateProfileImageUseCase,
     NativeImagePicker? nativeImagePicker,
-  })  : _getUserProfileUseCase = getUserProfileUseCase,
-        _updateProfileImageUseCase = updateProfileImageUseCase,
-        _nativeImagePicker = nativeImagePicker ?? NativeImagePicker.instance,
-        super(const ProfileState()) {
+  }) : _getUserProfileUseCase = getUserProfileUseCase,
+       _updateProfileImageUseCase = updateProfileImageUseCase,
+       _nativeImagePicker = nativeImagePicker ?? NativeImagePicker.instance,
+       super(const ProfileState()) {
     _init();
   }
 
   Future<void> _init() async {
-    await Future.wait([
-      _loadCurrentUserId(),
-      _loadAppVersion(),
-    ]);
+    await Future.wait([_loadCurrentUserId(), _loadAppVersion()]);
     await fetchUserProfile();
   }
 
@@ -53,7 +52,10 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         state.profile != null) {
       return;
     }
-    state = state.copyWith(status: ProfileStatus.loading);
+    final bool hasProfile = state.profile != null;
+    if (!hasProfile) {
+      state = state.copyWith(status: ProfileStatus.loading);
+    }
 
     final userId = state.currentUserId.isNotEmpty
         ? state.currentUserId
@@ -72,6 +74,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         state = state.copyWith(
           status: ProfileStatus.loaded,
           profile: profile,
+          clearLocalImage: force,
         );
       },
     );
@@ -161,21 +164,27 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     return UserProfileEntity(
       userId: original.userId,
       userName: original.userName,
+      name: original.name,
       profileIcon: imageUrl,
       phoneNumber: original.phoneNumber,
     );
   }
 
+  Future<void> logout() async {
+    await UserStore.clearUserDetail();
+    await _fireStoreUtil.logout();
+  }
 }
 
 final profileNotifierProvider =
     StateNotifierProvider<ProfileNotifier, ProfileState>((ref) {
-  final getUserProfileUseCase = ref.watch(getUserProfileUseCaseProvider);
-  final updateProfileImageUseCase =
-      ref.watch(updateProfileImageUseCaseProvider);
+      final getUserProfileUseCase = ref.watch(getUserProfileUseCaseProvider);
+      final updateProfileImageUseCase = ref.watch(
+        updateProfileImageUseCaseProvider,
+      );
 
-  return ProfileNotifier(
-    getUserProfileUseCase: getUserProfileUseCase,
-    updateProfileImageUseCase: updateProfileImageUseCase,
-  );
-});
+      return ProfileNotifier(
+        getUserProfileUseCase: getUserProfileUseCase,
+        updateProfileImageUseCase: updateProfileImageUseCase,
+      );
+    });

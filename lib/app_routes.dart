@@ -72,7 +72,7 @@ final List<GetPage> appRoutes = [
         Get.lazyPut(() => PostPreviewController((Get.arguments as FeedData)),
             fenix: true);
       })),
-  GetPage(name: webviewRouteName, page: () => const WebViewRoute()),
+  GetPage(name: WebViewRoute.webviewRouteName, page: () => const WebViewRoute()),
   GetPage(
       name: FeedDetailScreen.routeName,
       page: () => FeedDetailScreen(),

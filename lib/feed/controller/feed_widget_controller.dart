@@ -16,7 +16,8 @@ import '../../preview/screen/post_preview_screen.dart';
 import '../../util/utility.dart';
 
 class FeedWidgetController extends GetxController {
-  RxString _currentUserId = "".obs;
+
+  final RxString _currentUserId = "".obs;
 
   RxString get currentUserId => _currentUserId;
 
@@ -76,11 +77,11 @@ class FeedWidgetController extends GetxController {
       final filePath = '${temp.path}/post_image.jpg';
       File(filePath).writeAsBytesSync(bytes);
       final shareLink =
-          "${feedData.post?.caption ?? ""} \n\n Checkout this post on Bookish: \n https://bookissh-web.web.app/post/${postId}";
+          "${feedData.post?.caption ?? ""} \n\n Checkout this post on Bookish: \n https://bookissh-web.web.app/post/$postId";
       Share.shareXFiles([XFile(filePath)], subject: feedData.post?.caption ?? "", text: shareLink);
     } else {
       final shareLink =
-          "${feedData.post?.caption ?? ""} \n\n Checkout this post on Bookish: \n https://bookissh-web.web.app/post/${postId}";
+          "${feedData.post?.caption ?? ""} \n\n Checkout this post on Bookish: \n https://bookissh-web.web.app/post/$postId";
       Share.share(
         shareLink,
         subject: feedData.post?.caption ?? "",

@@ -1,5 +1,8 @@
 package com.newaura.bookish.profile
 
+import android.util.Log
+import com.newaura.bookish.util.booleanOr
+import com.newaura.bookish.util.stringOr
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +31,7 @@ object ProfileBridge {
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     fun attachChannel(messenger: BinaryMessenger) {
+        Log.i("BookishProfile", "channel attached $CHANNEL")
         channel = MethodChannel(messenger, CHANNEL).apply {
             setMethodCallHandler { call, result ->
                 when (call.method) {
@@ -58,6 +62,7 @@ object ProfileBridge {
         return ProfileUiState(
             status = arguments.stringOr("status", ProfileUiState.STATUS_LOADING),
             userName = arguments.stringOr("userName", ""),
+            name = arguments.stringOr("name", ""),
             phoneNumber = arguments.stringOr("phoneNumber", ""),
             profileIconUrl = arguments.stringOr("profileIconUrl", ""),
             localImagePath = arguments.stringOr("localImagePath", ""),
@@ -67,15 +72,5 @@ object ProfileBridge {
             isDebug = arguments.booleanOr("isDebug", false),
             errorMessage = arguments.stringOr("errorMessage", ""),
         )
-    }
-
-    private fun Map<*, *>.stringOr(key: String, default: String): String {
-        val value: Any? = this[key]
-        return if (value is String) value else default
-    }
-
-    private fun Map<*, *>.booleanOr(key: String, default: Boolean): Boolean {
-        val value: Any? = this[key]
-        return if (value is Boolean) value else default
     }
 }

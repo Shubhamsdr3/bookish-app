@@ -1,5 +1,6 @@
 package com.newaura.bookish.widget
 
+import android.util.Log
 import com.newaura.bookish.profile.ProfileBridge
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
@@ -23,6 +24,7 @@ class PlatformViewPlugin : FlutterPlugin {
             NativeViewFactory.PROFILE_VIEW_TYPE,
             NativeViewFactory(NativeViewFactory.PROFILE_VIEW_TYPE),
         )
+        Log.i("BookishProfile", "registered profile-compose-view")
     }
 
     override fun onDetachedFromEngine(binding: FlutterPluginBinding) {

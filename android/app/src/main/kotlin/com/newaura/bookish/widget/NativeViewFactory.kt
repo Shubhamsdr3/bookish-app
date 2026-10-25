@@ -1,6 +1,7 @@
 package com.newaura.bookish.widget
 
 import android.content.Context
+import android.util.Log
 import com.newaura.bookish.profile.ProfilePlatformView
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
@@ -27,7 +28,10 @@ internal class NativeViewFactory(
                 viewId,
                 creationParams as Map<String, Any>?,
             )
-            PROFILE_VIEW_TYPE -> ProfilePlatformView(context)
+            PROFILE_VIEW_TYPE -> {
+                Log.i("BookishProfile", "factory create profile viewId=$viewId")
+                ProfilePlatformView(context)
+            }
             else -> error("Unknown platform view type: $viewType")
         }
     }

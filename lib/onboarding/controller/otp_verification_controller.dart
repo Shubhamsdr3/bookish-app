@@ -9,6 +9,7 @@ import 'package:network_service/util/user_store.dart';
 import '../../firebase/firestore_util.dart';
 import '../../home/screens/home_screen.dart';
 import '../../util/utility.dart';
+import '../data/login_request.dart';
 import '../data/onboarding_repository.dart';
 
 enum ButtonState { ENABLED, DISABLED, LOADING }
@@ -167,9 +168,9 @@ class OtpVerificationController extends GetxController {
     otpVerificationState.value = OtpVerificationState.SUCCESS;
     UserStore.setUserLoggedIn(true);
     final payload = await _getUserPayload();
-    onboardingRepository.loginUser(payload).then((response) {
+    onboardingRepository.loginUser(payload).then((response) async {
       _isLoading.value = false;
-      _saveUserDetails(response.data);
+      await _saveUserDetails(response.data);
       Get.offAll(HomeScreen());
     }).onError((e, s) {
       _isLoading.value = false;
@@ -177,7 +178,7 @@ class OtpVerificationController extends GetxController {
     });
   }
 
-  void _saveUserDetails(UserData? userData) {
+  Future<void> _saveUserDetails(UserData? userData) async {
     if (userData == null) return;
     UserStore.saveUser(userData.user!);
     UserStore.setUserId(userData.user?.userId ?? "");
@@ -186,17 +187,15 @@ class OtpVerificationController extends GetxController {
     }
   }
 
-  Future<Map<String, dynamic>> _getUserPayload() async {
+  Future<LoginRequest> _getUserPayload() async {
     final String userId = await UserStore.getUserId();
     final String? idToken = await FireStoreUtil.getFirebaseIdToken();
-    return <String, dynamic>{
-      if (idToken != null && idToken.isNotEmpty) 'idToken': idToken,
-      if (userId.isNotEmpty) 'userId': userId,
-      'privacy': 0,
-      'createdAt': DateTime.now().millisecondsSinceEpoch,
-      'connections': 0,
-      'phoneNumber': phoneNumber,
-    };
+    return LoginRequest(
+      firebaseIdToken: idToken,
+      userId: userId,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      phoneNumber: phoneNumber,
+    );
   }
 
   void resendOtp() {

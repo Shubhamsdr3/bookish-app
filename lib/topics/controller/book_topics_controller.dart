@@ -12,27 +12,28 @@ enum CategoryType { FICTION, NON_FICTION }
 
 class SelectTopicController extends GetxController {
 
-  Rx<BookTopicResponse?> _bookTopicResponse = Rx(null);
+  final Rx<BookTopicResponse?> _bookTopicResponse = Rx(null);
   Rx<BookTopicResponse?> get bookTopicResponse => _bookTopicResponse;
 
-  RxList<ChipData> _fictionList = <ChipData>[].obs;
+  final RxList<ChipData> _fictionList = <ChipData>[].obs;
   RxList<ChipData> get fictionList => _fictionList;
 
-  RxList<ChipData> _nonFictionList = <ChipData>[].obs;
+  final RxList<ChipData> _nonFictionList = <ChipData>[].obs;
   RxList<ChipData> get nonFictionList => _nonFictionList;
 
-  RxList<String> _selectedFictionList = <String>[].obs;
+  final RxList<String> _selectedFictionList = <String>[].obs;
   RxList<String> get selectedFictionList => _selectedFictionList;
-  RxList<String> _selectedNonFictionList = <String>[].obs;
+
+  final RxList<String> _selectedNonFictionList = <String>[].obs;
   RxList<String> get selectedNonFictionList => _selectedNonFictionList;
 
-  RxInt _currentSelectedIndex = 0.obs;
+  final RxInt _currentSelectedIndex = 0.obs;
   RxInt get currentSelectedIndex => _currentSelectedIndex;
 
-  RxBool _isLoading = false.obs;
+  final RxBool _isLoading = false.obs;
   RxBool get isLoading => _isLoading;
 
-  Rx<ButtonState> _buttonState = ButtonState.disabled.obs;
+  final Rx<ButtonState> _buttonState = ButtonState.disabled.obs;
   Rx<ButtonState> get buttonState => _buttonState;
 
   late ITopicRepository _repository;
@@ -75,7 +76,7 @@ class SelectTopicController extends GetxController {
   }
 
   bool isChipSelected(ChipData chipData) {
-    if(_currentSelectedIndex == 0) {
+    if(_currentSelectedIndex.value == 0) {
       return _selectedFictionList.contains(chipData.title ?? "");
     } else {
       return _selectedNonFictionList.contains(chipData.title ?? "");
@@ -84,13 +85,13 @@ class SelectTopicController extends GetxController {
 
   void onChipSelected(ChipData chipData, bool value) {
     if(value) {
-      if(_currentSelectedIndex == 0) {
+      if(_currentSelectedIndex.value == 0) {
         _selectedFictionList.add(chipData.title ?? "");
       } else {
         _selectedNonFictionList.add(chipData.title ?? "");
       }
     } else {
-      if(_currentSelectedIndex == 0) {
+      if(_currentSelectedIndex.value == 0) {
         _selectedFictionList.remove(chipData.title);
       } else {
         _selectedNonFictionList.remove(chipData.title);

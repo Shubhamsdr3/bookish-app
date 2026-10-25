@@ -20,6 +20,12 @@ class ApiService {
   AliceDioAdapter? _aliceAdapter;
   bool _initialized = false;
 
+  /// Created before [initialize] so the first frame can attach it.
+  /// Alice reads this key when a call arrives. A key created later is never
+  /// mounted, and Alice then crashes on `getContext()!`.
+  final GlobalKey<NavigatorState> _aliceNavigatorKey =
+      GlobalKey<NavigatorState>();
+
   ApiService._internal();
 
   factory ApiService() {
@@ -42,28 +48,30 @@ class ApiService {
     if (!kDebugMode) {
       throw StateError('Alice is only available in debug mode.');
     }
-    if (_alice == null) {
-      if (!_initialized) {
-        throw StateError(
-          'ApiService has not been initialized. Call initialize() first.',
-        );
-      }
-      _aliceAdapter ??= AliceDioAdapter();
-      _alice = Alice(
-        configuration: AliceConfiguration(
-          showNotification: true,
-          showInspectorOnShake: true,
-        ),
-      )..addAdapter(_aliceAdapter!);
+    if (!_initialized) {
+      throw StateError(
+        'ApiService has not been initialized. Call initialize() first.',
+      );
     }
-    return _alice!;
+    return _debugAlice();
   }
 
   GlobalKey<NavigatorState>? get aliceNavigatorKey {
-    if (!kDebugMode || !_initialized) {
+    if (!kDebugMode) {
       return null;
     }
-    return alice.getNavigatorKey();
+    return _aliceNavigatorKey;
+  }
+
+  Alice _debugAlice() {
+    _aliceAdapter ??= AliceDioAdapter();
+    return _alice ??= Alice(
+      configuration: AliceConfiguration(
+        navigatorKey: _aliceNavigatorKey,
+        showNotification: true,
+        showInspectorOnShake: true,
+      ),
+    )..addAdapter(_aliceAdapter!);
   }
 
   Dio _createApiClient() {
@@ -96,13 +104,7 @@ class ApiService {
     }
 
     if (kDebugMode) {
-      _aliceAdapter ??= AliceDioAdapter();
-      _alice ??= Alice(
-        configuration: AliceConfiguration(
-          showNotification: true,
-          showInspectorOnShake: true,
-        ),
-      )..addAdapter(_aliceAdapter!);
+      _debugAlice();
 
       if (!client.interceptors.any((interceptor) => interceptor == _aliceAdapter)) {
         client.interceptors.add(_aliceAdapter!);

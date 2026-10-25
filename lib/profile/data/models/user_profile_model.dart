@@ -4,6 +4,7 @@ class UserProfileModel extends UserProfileEntity {
   const UserProfileModel({
     required super.userId,
     required super.userName,
+    super.name,
     super.profileIcon,
     super.phoneNumber,
   });
@@ -12,6 +13,7 @@ class UserProfileModel extends UserProfileEntity {
     return UserProfileModel(
       userId: json['userId'] as String? ?? '',
       userName: json['userName'] as String? ?? '',
+      name: json['name'] as String?,
       profileIcon: json['profileIcon'] as String?,
       phoneNumber: json['phoneNumber'] as String?,
     );
@@ -21,6 +23,7 @@ class UserProfileModel extends UserProfileEntity {
     return {
       'userId': userId,
       'userName': userName,
+      'name': name,
       'profileIcon': profileIcon,
       'phoneNumber': phoneNumber,
     };
@@ -30,6 +33,7 @@ class UserProfileModel extends UserProfileEntity {
     return UserProfileEntity(
       userId: userId,
       userName: userName,
+      name: name,
       profileIcon: profileIcon,
       phoneNumber: phoneNumber,
     );

@@ -1,11 +1,16 @@
 import 'package:bookish/data/notification_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:network_service/base_api_service.dart';
 import 'package:network_service/util/user_store.dart';
 
 import '../firebase/firestore_util.dart';
 
 class PushNotificationService {
+  /// Alice posts its inspector notification with this payload and id 0.
+  static const String _alicePayload = 'Alice';
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -32,16 +37,7 @@ class PushNotificationService {
         InitializationSettings(android: androidSettings, iOS: iOSSettings);
     flutterLocalNotificationsPlugin.initialize(
       initSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse details) {
-        final List<String> str =
-            details.payload!.replaceAll('{', '').replaceAll('}', '').split(',');
-        final Map<String, dynamic> result = <String, dynamic>{};
-        for (int i = 0; i < str.length; i++) {
-          final List<String> s = str[i].split(':');
-          result.putIfAbsent(s[0].trim(), () => s[1].trim());
-        }
-        notificationRedirect(result);
-      },
+      onDidReceiveNotificationResponse: _onNotificationTapped,
     );
     // onMessage is called when the app is in foreground and a notification is received
     FirebaseMessaging.onMessage.listen((RemoteMessage? message) {
@@ -87,6 +83,38 @@ class PushNotificationService {
         importance: Importance.max,
       );
 
+  void _onNotificationTapped(NotificationResponse details) {
+    final String? payload = details.payload;
+    if (payload == _alicePayload) {
+      if (kDebugMode) {
+        ApiService().alice.showInspector();
+      }
+      return;
+    }
+    if (payload == null || payload.isEmpty) {
+      return;
+    }
+    final Map<String, dynamic> result = _payloadMap(payload);
+    if (result.isEmpty) {
+      return;
+    }
+    notificationRedirect(result);
+  }
+
+  Map<String, dynamic> _payloadMap(String payload) {
+    final Map<String, dynamic> result = <String, dynamic>{};
+    final List<String> fields =
+        payload.replaceAll('{', '').replaceAll('}', '').split(',');
+    for (final String field in fields) {
+      final List<String> parts = field.split(':');
+      if (parts.length < 2) {
+        continue;
+      }
+      result.putIfAbsent(parts[0].trim(), () => parts[1].trim());
+    }
+    return result;
+  }
+
   void notificationRedirect(Map<String, dynamic> result) {
     print("Notification redirection: ${result}");
   }
@@ -98,8 +126,10 @@ class PushNotificationService {
         priority: Priority.high, importance: Importance.max);
     // var iOS = new IOSNotificationDetails();
     final platform = new NotificationDetails(android: android);
+    final int notificationId =
+        message.hashCode == 0 ? 1 : message.hashCode;
     await flutterLocalNotificationsPlugin.show(
-        0, message.data['title'], message.data['message'], platform,
+        notificationId, message.data['title'], message.data['message'], platform,
         payload: message.data.toString());
     final userId = await UserStore.getUserId();
     final notificationInfo = NotificationInfo(

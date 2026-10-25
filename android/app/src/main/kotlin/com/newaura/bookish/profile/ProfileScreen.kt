@@ -200,6 +200,19 @@ private fun ProfileLoadedContent(
                             )
                         },
                     )
+                    if (state.name.isNotEmpty()) {
+                        HorizontalDivider()
+                        ProfileInfoRow(
+                            title = "Name",
+                            subtitle = state.name,
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Filled.Person,
+                                    contentDescription = "Name",
+                                )
+                            },
+                        )
+                    }
                     HorizontalDivider()
                     ProfileInfoRow(
                         title = "Phone number",
@@ -259,15 +272,15 @@ private fun ProfileLoadedContent(
                 }
             }
             Spacer(modifier = Modifier.height(48.dp))
+
+            Text(
+                text = "v${state.appVersion}",
+                color = BookishThemeTokens.colors.secondaryText,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp),
+            )
         }
-        Text(
-            text = "v${state.appVersion}",
-            color = BookishThemeTokens.colors.secondaryText,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 16.dp),
-        )
     }
 }
 

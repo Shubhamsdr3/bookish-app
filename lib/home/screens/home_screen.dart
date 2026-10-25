@@ -65,6 +65,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                 backgroundColor: Colors.white,
                 elevation: 10.r,
                 onTap: (index) {
+                  print('[BookishProfile] tab selected index=$index');
                   AppState().tabIndex.value = index;
                 },
                 items: const [

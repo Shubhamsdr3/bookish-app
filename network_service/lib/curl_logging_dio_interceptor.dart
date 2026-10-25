@@ -37,7 +37,7 @@ class CurlLoggerDioInterceptor extends Interceptor {
   }
 
   String _cURLRepresentation(RequestOptions options) {
-    List<String> components = ['curl -i'];
+    List<String> components = ['CURL -i'];
     if (options.method.toUpperCase() != 'GET') {
       components.add('-X ${options.method}');
     }

@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:bookish/firebase/firestore_util.dart';
 import 'package:bookish/onboarding/data/auth_api_service.dart';
 import 'package:bookish/onboarding/data/onboarding_repository.dart';
+import 'package:bookish/onboarding/data/login_request.dart';
 import 'package:bookish/topics/screens/select_topics_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,14 +20,14 @@ class EditProfileController extends GetxController {
 
   Rx<XFile?> imageFile = Rx(null);
 
-  final ImagePicker _imagePicker = new ImagePicker();
+  final ImagePicker _imagePicker = ImagePicker();
   RxString imageDownloadUrl = "".obs;
 
-  RxBool _imageLoading = false.obs;
+  final RxBool _imageLoading = false.obs;
 
   RxBool get imageLoading => _imageLoading;
 
-  RxBool _isLoading = false.obs;
+  final RxBool _isLoading = false.obs;
 
   RxBool get isLoading => _isLoading;
 
@@ -41,9 +41,9 @@ class EditProfileController extends GetxController {
 
   Future<void> onCameraClicked(ImageSource imageSource) async {
     Get.back();
-    _imagePicker
-        .pickImage(source: imageSource, imageQuality: 25)
-        .then((pickedFile) {
+    _imagePicker.pickImage(source: imageSource, imageQuality: 25).then((
+      pickedFile,
+    ) {
       imageFile.value = pickedFile;
       _uploadImageFile(imageFile.value);
     });
@@ -54,52 +54,49 @@ class EditProfileController extends GetxController {
     try {
       _imageLoading.value = true;
       final file = File(imageFile.path);
-      var storageRef =
-          FirebaseStorage.instance.ref("images/${imageFile.name}.jpg");
+      var storageRef = FirebaseStorage.instance.ref(
+        "images/${imageFile.name}.jpg",
+      );
       final TaskSnapshot snapshot = await storageRef.putFile(
-          file,
-          SettableMetadata(
-            contentType: "image/jpeg",
-          ));
+        file,
+        SettableMetadata(contentType: "image/jpeg"),
+      );
       String downloadUrl = await snapshot.ref.getDownloadURL();
       imageDownloadUrl.value = downloadUrl.toString();
-      print("Downloaded url$imageDownloadUrl");
+      debugPrint("Downloaded url$imageDownloadUrl");
       _imageLoading.value = false;
     } on FirebaseException catch (e) {
-      print(e);
+      debugPrint("Error occurred while uploading image: $e");
     }
   }
 
   Future<void> onSubmitClicked() async {
     _isLoading.value = true;
     final payload = await _getUserDetails();
-    _repository.loginUser(payload).then((response) {
-      _isLoading.value = false;
-      if (imageDownloadUrl.isNotEmpty)
-        UserStore.saveUserProfileIcon(imageDownloadUrl.value);
-      Get.offAll(() => SelectTopicsScreen());
-    }).onError((e, s) {
-      _isLoading.value = false;
-      debugPrint("$e : $s");
-    });
+    _repository
+        .updateProfile(payload)
+        .then((response) {
+          _isLoading.value = false;
+          if (imageDownloadUrl.isNotEmpty) {
+            UserStore.saveUserProfileIcon(imageDownloadUrl.value);
+          }
+          Get.back();
+          // Get.offAll(() => SelectTopicsScreen());
+        })
+        .onError((e, s) {
+          _isLoading.value = false;
+          debugPrint("$e : $s");
+        });
   }
 
-  Future<Map<String, dynamic>> _getUserDetails() async {
-    final String userId = await UserStore.getUserId();
-    final String? idToken = await FireStoreUtil.getFirebaseIdToken();
-    return <String, dynamic>{
-      if (idToken != null && idToken.isNotEmpty) 'idToken': idToken,
-      if (userId.isNotEmpty) 'userId': userId,
-      if (userNameController.text.isNotEmpty)
-        'userName': userNameController.text,
-      if (nameController.text.isNotEmpty) 'name': nameController.text,
-      if (imageDownloadUrl.value.isNotEmpty)
-        'profileIcon': imageDownloadUrl.value,
-      'privacy': 0,
-      'createdAt': DateTime.now().millisecondsSinceEpoch,
-      'connections': 0,
-      'phoneNumber': phoneNumber,
-    };
+  Future<LoginRequest> _getUserDetails() async {
+    return LoginRequest(
+      userName: userNameController.text,
+      name: nameController.text,
+      profileIcon: imageDownloadUrl.value,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      phoneNumber: phoneNumber,
+    );
   }
 
   @override

@@ -66,4 +66,13 @@ class UserStore {
     }
     return null;
   }
+
+  static Future<void> clearUserDetail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_USER_LOGGED_IN);
+    await prefs.remove(_USER_DETAIL);
+    await prefs.remove(_USER_PROFILE);
+    await prefs.remove(_USER_Id);
+    await prefs.remove(_AUTH_TOKEN);
+  }
 }

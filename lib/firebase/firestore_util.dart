@@ -1,5 +1,6 @@
 import 'package:bookish/data/chat_message.dart';
 import 'package:bookish/data/notification_info.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:network_service/data/reader.dart';
 import 'package:bookish/data/user_comment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,7 +23,9 @@ class FireStoreUtil {
 
   final _fireStoreDb = FirebaseFirestore.instance;
 
-  updatePostLike(String? postId, String likedByUserId, bool isLiked, int likeCount) {
+  final _firebase = FirebaseAuth.instance;
+
+  void updatePostLike(String? postId, String likedByUserId, bool isLiked, int likeCount) {
     if(postId == null || postId.isEmpty) return;
     final docRef = _fireStoreDb.collection(_POST_COLLECTION).doc(postId);
     if(isLiked) {
@@ -38,7 +41,7 @@ class FireStoreUtil {
     );
   }
 
-  updatePostComment(String? postId, String commentUserId, int commentCount) {
+  void updatePostComment(String? postId, String commentUserId, int commentCount) {
     if(postId == null || postId.isEmpty) return;
     debugPrint("Updating comment count..$commentCount");
     final docRef = _fireStoreDb.collection(_POST_COLLECTION).doc(postId);
@@ -51,7 +54,7 @@ class FireStoreUtil {
     );
   }
 
-  updatePostShare(String? postId, String shareUserId, int sharedCount) {
+  void updatePostShare(String? postId, String shareUserId, int sharedCount) {
     if(postId == null || postId.isEmpty) return;
     final docRef = _fireStoreDb.collection(_POST_COLLECTION).doc(postId);
     docRef.update({'share.count': sharedCount, 'share.userIds': FieldValue.arrayUnion([shareUserId])});
@@ -63,14 +66,14 @@ class FireStoreUtil {
     );
   }
 
-  addNotification(String userId, NotificationInfo notification) {
+  void addNotification(String userId, NotificationInfo notification) {
     _fireStoreDb.collection(_NOTIFICATION_COLLECTION)
         .doc(userId)
         .collection("data")
         .add(notification.toJson());
   }
 
-  saveFCMToke(String userId, String token) {
+  void saveFCMToken(String userId, String token) {
     _fireStoreDb.collection(_NOTIFICATION_COLLECTION)
         .doc(userId).set({"fcmToken": token});
   }
@@ -143,7 +146,7 @@ class FireStoreUtil {
     return count;
   }
 
-  void updateNotification(userId) async {
+  void updateNotification(String userId) async {
     _fireStoreDb.collection("notifications")
         .doc(userId)
         .collection("data")
@@ -159,5 +162,9 @@ class FireStoreUtil {
     final DocumentSnapshot snapshot = await _fireStoreDb.collection("readers").doc(userId).get();
     final userJson = snapshot.data() as Map<String, dynamic>?;
     return Reader.fromJson(userJson);
+  }
+
+  Future<void> logout() async {
+    _firebase.signOut();
   }
 }

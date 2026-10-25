@@ -1,10 +1,11 @@
 import 'package:bookish/webview/in_app_webview.dart' deferred as webview;
 import 'package:flutter/material.dart';
 
-const String webviewRouteName = '/bookish-webview';
 
 class WebViewRoute extends StatefulWidget {
   const WebViewRoute({super.key});
+
+  static const String webviewRouteName = '/bookish-webview';
 
   @override
   State<WebViewRoute> createState() => _WebViewRouteState();

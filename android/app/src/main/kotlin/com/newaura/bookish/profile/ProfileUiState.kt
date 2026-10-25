@@ -6,6 +6,7 @@ package com.newaura.bookish.profile
 data class ProfileUiState(
     val status: String = STATUS_LOADING,
     val userName: String = "",
+    val name: String = "",
     val phoneNumber: String = "",
     val profileIconUrl: String = "",
     val localImagePath: String = "",

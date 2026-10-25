@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 class AccountSettingScreen extends GetView<AccountSettingController> {
   static String routeName = "/account-setting";
 
+  const AccountSettingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

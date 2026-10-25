@@ -20,7 +20,7 @@ class AccountSettingController extends GetxController {
         subtitle: '',
         iconUrl: '',
         onClick: () {
-          Get.toNamed(webviewRouteName);
+          Get.toNamed(WebViewRoute.webviewRouteName);
         },
       ),
   ];

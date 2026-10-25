@@ -42,10 +42,10 @@ class _InAppWebViewState extends State<InAppWebView> {
           },
           onPageFinished: (String url) {},
           onHttpError: (HttpResponseError error) {
-            print("onHttpError: ${error}");
+            debugPrint("onHttpError: ${error}");
           },
           onWebResourceError: (WebResourceError error) {
-            print("onWebResourceError: ${error.description}");
+            debugPrint("onWebResourceError: ${error.description}");
           },
         ),
       );

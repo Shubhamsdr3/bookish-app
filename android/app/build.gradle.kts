@@ -1,9 +1,27 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
     // The Flutter Gradle Plugin must be applied after the Android Gradle plugin.
     id("dev.flutter.flutter-gradle-plugin")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
+}
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = listOf("keystore.properties", "key.properties")
+    .map { rootProject.file(it) }
+    .firstOrNull { it.exists() }
+
+if (keystorePropertiesFile != null) {
+    keystorePropertiesFile.inputStream().use { input ->
+        keystoreProperties.load(input)
+    }
+}
+
+val releaseStoreFile = keystoreProperties.getProperty("storeFile")?.let { storePath ->
+    file(storePath)
 }
 
 android {
@@ -27,11 +45,24 @@ android {
         multiDexEnabled = true
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties.getProperty("keyAlias")
+            keyPassword = keystoreProperties.getProperty("keyPassword")
+            storePassword = keystoreProperties.getProperty("storePassword")
+            storeFile = releaseStoreFile
+        }
+    }
+
     buildTypes {
         release {
             isShrinkResources = true
             isMinifyEnabled = true
-//            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("release")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
 
         debug {
@@ -79,6 +110,6 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("io.coil-kt:coil-compose:2.7.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-    implementation("com.google.android.play:core:1.8.0")
+    implementation("com.google.android.play:core:1.10.3")
     debugImplementation("androidx.compose.ui:ui-tooling:1.12.1")
 }

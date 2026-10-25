@@ -1,5 +1,6 @@
 import 'package:bookish/feedback/screens/feedback_screen.dart';
 import 'package:bookish/native/native_profile_bridge.dart';
+import 'package:bookish/onboarding/screen/bookish_login_screen.dart';
 import 'package:bookish/onboarding/screen/edit_profile_screen.dart';
 import 'package:bookish/profile/ui/notifiers/user_profile_state.dart';
 import 'package:bookish/profile/ui/providers/profile_state_providers.dart';
@@ -64,41 +65,57 @@ class _NativeProfileTabState extends ConsumerState<NativeProfileTab> {
         );
       },
       onCreatePlatformView: (PlatformViewCreationParams params) {
-        return PlatformViewsService.initSurfaceAndroidView(
-          id: params.id,
-          viewType: NativeProfileTab.viewType,
-          layoutDirection: TextDirection.ltr,
-          creationParams: const <String, dynamic>{},
-          creationParamsCodec: const StandardMessageCodec(),
-        )
-          ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
-          ..create();
+        debugPrint('[BookishProfile] creating surface id=${params.id}');
+        try {
+          return PlatformViewsService.initSurfaceAndroidView(
+            id: params.id,
+            viewType: NativeProfileTab.viewType,
+            layoutDirection: TextDirection.ltr,
+            creationParams: const <String, dynamic>{},
+            creationParamsCodec: const StandardMessageCodec(),
+          )
+            ..addOnPlatformViewCreatedListener((int id) {
+              debugPrint('[BookishProfile] surface created id=$id');
+              params.onPlatformViewCreated(id);
+            })
+            ..create();
+        } catch (error, stackTrace) {
+          debugPrint('[BookishProfile] create failed: $error\n$stackTrace');
+          rethrow;
+        }
       },
     );
   }
 
-  Future<void> _pushState(ProfileState state) {
+  Future<void> _pushState(ProfileState state) async {
     final String status = switch (state.status) {
       ProfileStatus.loaded => NativeProfileStatus.loaded,
       ProfileStatus.error => NativeProfileStatus.error,
       ProfileStatus.initial || ProfileStatus.loading =>
         NativeProfileStatus.loading,
     };
-    return _bridge.updateState(
-      status: status,
-      userName: state.profile?.userName ?? '',
-      phoneNumber: state.profile?.phoneNumber ?? '',
-      profileIconUrl: state.profile?.profileIcon ?? '',
-      localImagePath: state.localImagePath ?? '',
-      appVersion: state.appVersion,
-      isOwner: state.isOwner,
-      isImageUploading: state.isImageUploading,
-      isDebug: kDebugMode,
-      errorMessage: state.errorMessage ?? '',
-    );
+    debugPrint('[BookishProfile] pushState status=$status');
+    try {
+      await _bridge.updateState(
+        status: status,
+        userName: state.profile?.userName ?? '',
+        name: state.profile?.name ?? '',
+        phoneNumber: state.profile?.phoneNumber ?? '',
+        profileIconUrl: state.profile?.profileIcon ?? '',
+        localImagePath: state.localImagePath ?? '',
+        appVersion: state.appVersion,
+        isOwner: state.isOwner,
+        isImageUploading: state.isImageUploading,
+        isDebug: kDebugMode,
+        errorMessage: state.errorMessage ?? '',
+      );
+    } catch (error, stackTrace) {
+      debugPrint('$error\n$stackTrace');
+    }
   }
 
   Future<void> _onNativeAction(String action) async {
+    debugPrint('onNativeAction: $action');
     final notifier = ref.read(profileNotifierProvider.notifier);
     if (action == NativeProfileAction.retry) {
       await notifier.fetchUserProfile(force: true);
@@ -124,15 +141,23 @@ class _NativeProfileTabState extends ConsumerState<NativeProfileTab> {
       Get.toNamed(AccountSettingScreen.routeName);
       return;
     }
-    // logout: same TODO as Flutter UserProfileScreen
+    if (action == NativeProfileAction.logout) {
+      notifier.logout();
+      Get.toNamed(LoginScreen.routeName);
+      return;
+    }
   }
 
   Future<void> _openEditProfile() async {
     final userDetail = await UserStore.getUserDetail();
-    Get.to(
+    await Get.to(
       () => EditProfileScreen(
         phoneNumber: userDetail?.phoneNumber ?? '',
       ),
     );
+    if (!mounted) {
+      return;
+    }
+    await ref.read(profileNotifierProvider.notifier).fetchUserProfile(force: true);
   }
 }

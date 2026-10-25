@@ -7,15 +7,6 @@ const String appEnvName = String.fromEnvironment(
   defaultValue: 'staging',
 );
 
-Environment environmentFromName(String name) {
-  switch (name) {
-    case 'production':
-      return Environment.production;
-    default:
-      return Environment.staging;
-  }
-}
-
 class Constants {
   static const TNC_URL = "https://bookissh-web.web.app/";
   static const SOCKET_URL = 'http://192.168.0.5:3000';
@@ -24,11 +15,10 @@ class Constants {
 
   static void setEnvironment(Environment env) {
     switch (env) {
-      case Environment.staging:
-        _config = _Config.stagingConstants;
-        break;
       case Environment.production:
         _config = _Config.productionConstants;
+      default:
+        _config = _Config.stagingConstants;
         break;
     }
   }

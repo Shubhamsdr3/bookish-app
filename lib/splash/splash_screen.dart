@@ -1,11 +1,17 @@
+import 'dart:async';
+
 import 'package:bookish/util/utility.dart';
+import 'package:bookish/webview/webview_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:network_service/util/user_store.dart';
 
 import '../home/screens/home_screen.dart';
 import '../onboarding/screen/bookish_login_screen.dart';
+
+/// Completed after Firebase and API startup. App Check is not part of this.
+/// The splash widget waits on it, but the first frame is already on screen.
+final Completer<void> appStartup = Completer<void>();
 
 /// Flutter splash must match native splash (white + centered logo).
 /// Native assets are generated from [flutter_native_splash.yaml].
@@ -25,8 +31,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Hand off from native splash to this identical Flutter frame.
-      FlutterNativeSplash.remove();
       _navigateToHome();
     });
   }
@@ -56,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToHome() async {
-    // Get.offNamed(NativeAndroidPlugin.routeName);
+    await appStartup.future;
     final userLogged = await UserStore.isUserLoggedIn();
     if (!mounted) return;
     if (userLogged) {

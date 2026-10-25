@@ -24,6 +24,7 @@ class NativeProfileBridge {
   Future<void> updateState({
     required String status,
     required String userName,
+    required String name,
     required String phoneNumber,
     required String profileIconUrl,
     required String localImagePath,
@@ -36,6 +37,7 @@ class NativeProfileBridge {
     return _channel.invokeMethod<void>('updateState', <String, Object?>{
       'status': status,
       'userName': userName,
+      'name': name,
       'phoneNumber': phoneNumber,
       'profileIconUrl': profileIconUrl,
       'localImagePath': localImagePath,

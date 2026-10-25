@@ -18,19 +18,19 @@ class HomeScreenController extends GetxController {
   void _addTokenToFirebase(String? token) async {
     if (token == null || token.isEmpty) return;
     final userId = await UserStore.getUserId();
-    _fireStoreUtil.saveFCMToke(userId, token);
+    _fireStoreUtil.saveFCMToken(userId, token);
   }
 
-  _getFcmToken() {
+  void _getFcmToken() {
     FirebaseMessaging.instance.onTokenRefresh.listen((token) {
-      print("FCM token: ${token}");
+      print("FCM token: $token");
       _addTokenToFirebase(token);
     }).onError((err) {
-      print("Error in getting token: ${err}");
+      print("Error in getting token: $err");
     });
 
     FirebaseMessaging.instance.getToken().then((token) {
-      print("FCM token: ${token}");
+      print("FCM token: $token");
       _addTokenToFirebase(token);
     });
   }

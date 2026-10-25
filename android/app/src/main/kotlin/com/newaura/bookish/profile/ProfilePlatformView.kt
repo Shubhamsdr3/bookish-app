@@ -1,6 +1,7 @@
 package com.newaura.bookish.profile
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
@@ -37,25 +38,40 @@ class ProfilePlatformView(
     }
 
     override fun onFlutterViewAttached(flutterView: View) {
-        val lifecycleOwner = flutterView.findViewTreeLifecycleOwner()
-            ?: error("FlutterView has no ViewTreeLifecycleOwner. MainActivity must install one.")
-        val savedStateRegistryOwner = flutterView.findViewTreeSavedStateRegistryOwner()
-            ?: error(
-                "FlutterView has no ViewTreeSavedStateRegistryOwner. MainActivity must install one.",
-            )
-        composeView.setViewTreeLifecycleOwner(lifecycleOwner)
-        composeView.setViewTreeSavedStateRegistryOwner(savedStateRegistryOwner)
-        if (!hasSetContent) {
-            composeView.setContent {
-                BookishTheme {
-                    ProfileScreen()
+        Log.i(
+            TAG,
+            "onFlutterViewAttached flutterView=${flutterView.width}x${flutterView.height}",
+        )
+        try {
+            val lifecycleOwner = flutterView.findViewTreeLifecycleOwner()
+                ?: error("FlutterView has no ViewTreeLifecycleOwner. MainActivity must install one.")
+            val savedStateRegistryOwner = flutterView.findViewTreeSavedStateRegistryOwner()
+                ?: error(
+                    "FlutterView has no ViewTreeSavedStateRegistryOwner. MainActivity must install one.",
+                )
+            composeView.setViewTreeLifecycleOwner(lifecycleOwner)
+            composeView.setViewTreeSavedStateRegistryOwner(savedStateRegistryOwner)
+            if (!hasSetContent) {
+                composeView.setContent {
+                    BookishTheme {
+                        ProfileScreen()
+                    }
                 }
+                hasSetContent = true
+                Log.i(TAG, "setContent done")
             }
-            hasSetContent = true
+        } catch (error: Throwable) {
+            Log.e(TAG, "onFlutterViewAttached failed", error)
+            throw error
         }
     }
 
     override fun dispose() {
+        Log.i(TAG, "dispose")
         composeView.disposeComposition()
+    }
+
+    private companion object {
+        const val TAG: String = "BookishProfile"
     }
 }

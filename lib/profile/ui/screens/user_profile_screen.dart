@@ -28,7 +28,7 @@ class UserProfileScreen extends ConsumerWidget {
         actions: [
           if (state.isOwner)
             IconButton(
-              onPressed: () => _onEditProfileClicked(),
+              onPressed: () => _onEditProfileClicked(ref),
               icon: const Icon(Icons.edit),
             ),
         ],
@@ -133,6 +133,14 @@ class UserProfileScreen extends ConsumerWidget {
                         title: 'User name',
                         subTitle: profile.userName,
                       ),
+                      if ((profile.name ?? '').isNotEmpty) ...[
+                        const Divider(),
+                        ProfileRowItem(
+                          icon: Icons.badge_outlined,
+                          title: 'Name',
+                          subTitle: profile.name ?? '',
+                        ),
+                      ],
                       const Divider(),
                       ProfileRowItem(
                         icon: Icons.phone,
@@ -206,13 +214,16 @@ class UserProfileScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _onEditProfileClicked() async {
+  Future<void> _onEditProfileClicked(WidgetRef ref) async {
     final userDetail = await UserStore.getUserDetail();
-    Get.to(
+    await Get.to(
       () => EditProfileScreen(
         phoneNumber: userDetail?.phoneNumber ?? '',
       ),
     );
+    await ref
+        .read(profileNotifierProvider.notifier)
+        .fetchUserProfile(force: true);
   }
 
   Widget _buildTappableRow({
